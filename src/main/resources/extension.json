@@ -1,0 +1,8 @@
+{
+  "entrypoint": "cc.minetale.hub.Hub",
+  "name": "Hub",
+  "mixinConfig": "mixins.extension.json",
+  "dependencies": [
+    "mLib"
+  ]
+}
