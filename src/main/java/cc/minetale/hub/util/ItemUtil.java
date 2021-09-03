@@ -1,6 +1,8 @@
 package cc.minetale.hub.util;
 
-import com.customwrld.commonlib.util.MC;
+import cc.minetale.commonlib.modules.rank.Rank;
+import cc.minetale.commonlib.util.MC;
+import cc.minetale.mlib.util.ProfileUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.entity.Player;
@@ -14,6 +16,7 @@ import net.minestom.server.tag.Tag;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class ItemUtil {
 
@@ -46,16 +49,18 @@ public class ItemUtil {
                 .withTag(Tag.String("type"), "PROFILE");
     }
 
-    public static ItemStack COSMETIC_SELECTOR = ItemStack.of(Material.BEACON)
+    public static ItemStack LOBBY_SELECTOR = ItemStack.of(Material.NETHER_STAR)
             .withDisplayName(Component.text()
-                    .append(MC.Style.component("Cosmetic Selector ", MC.CC.AQUA, TextDecoration.BOLD))
+                    .append(MC.Style.component("Lobby Selector ", MC.CC.AQUA, TextDecoration.BOLD))
                     .append(MC.Style.component("(Right Click)", MC.CC.GRAY))
                     .build())
-            .withLore(Arrays.asList(MC.Style.component("Right Click to select a cosmetic!", MC.CC.GRAY)))
-            .withTag(Tag.String("type"), "COSMETIC_SELECTOR");
+            .withLore(Arrays.asList(MC.Style.component("Right Click to select a lobby!", MC.CC.GRAY)))
+            .withTag(Tag.String("type"), "LOBBY_SELECTOR");
 
-    public static ItemStack VISIBILITY_ITEM(UUID uuid) {
-        return ItemStack.AIR; // Visibility.values()[HubExtension.visibilityMap.get(uuid)].itemStack;
+    public static void VISIBILITY_ITEM(Player player, Consumer<ItemStack> item) {
+        ProfileUtil.getAssociatedProfile(player).thenAccept(profile -> {
+            item.accept(Visibility.values()[profile.getOptionsProfile().getVisibilityIndex()].getItemStack());
+        });
     }
 
     public static ItemStack getParkourItem() {

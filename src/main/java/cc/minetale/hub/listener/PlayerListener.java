@@ -1,14 +1,20 @@
 package cc.minetale.hub.listener;
 
-import com.customwrld.commonlib.util.MC;
+import cc.minetale.commonlib.modules.profile.Profile;
+import cc.minetale.commonlib.modules.rank.Rank;
+import cc.minetale.commonlib.util.MC;
+import cc.minetale.flame.commands.RankUtil;
 import cc.minetale.hub.Hub;
 import cc.minetale.hub.manager.HubManager;
+import cc.minetale.hub.menu.HubSelectorMenu;
 import cc.minetale.hub.menu.ServerSelector;
 import cc.minetale.hub.sidebar.HubSidebar;
 import cc.minetale.hub.tab.Tab;
-import cc.minetale.hub.util.CyclicIterator;
-import cc.minetale.hub.util.ItemUtil;
-import cc.minetale.hub.util.Visibility;
+import cc.minetale.hub.util.*;
+import cc.minetale.hub.util.cooldown.Cooldown;
+import cc.minetale.hub.util.cooldown.CooldownManager;
+import cc.minetale.hub.util.cooldown.CooldownType;
+import cc.minetale.mlib.util.ProfileUtil;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
@@ -22,8 +28,11 @@ import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.*;
 import net.minestom.server.event.trait.EntityEvent;
+import net.minestom.server.instance.Instance;
 import net.minestom.server.inventory.PlayerInventory;
+import net.minestom.server.item.ItemStack;
 import net.minestom.server.tag.Tag;
+import net.minestom.server.utils.entity.EntityFinder;
 
 import java.time.Duration;
 
@@ -42,7 +51,8 @@ public class PlayerListener {
                     event.setCancelled(true);
 
                     if(event.getHand() == Player.Hand.MAIN) {
-                        String type = event.getItemStack().getTag(Tag.String("type"));
+                        ItemStack itemStack = event.getItemStack();
+                        String type = itemStack.getTag(Tag.String("type"));
 
                         switch (type) {
                             case "SERVER_SELECTOR": {
@@ -51,16 +61,31 @@ public class PlayerListener {
                             }
                             case "SHOP":
                             case "PROFILE":
-                            case "COSMETIC_SELECTOR":
                                 player.sendMessage(Component.text("This item is currently under development.", MC.CC.RED.getTextColor()));
                                 player.playSound(Sound.sound(Key.key("block.note_block.bass"), Sound.Source.MASTER, 1F, 0.5F));
                                 break;
+                            case "LOBBY_SELECTOR":
+                                new HubSelectorMenu(player);
+                                break;
                             case "VISIBILITY_SELECTOR":
-                                int index = 1; // TODO: Get index
+                                CooldownManager manager = Hub.getHub().getCooldownManager();
 
-                                Visibility visibility = new CyclicIterator<>(Visibility.values(), index).next();
+                                Cooldown cooldown = manager.getCooldownByType(player.getUuid(), CooldownType.VISIBILITY);
 
-                                player.playSound(Sound.sound(Key.key("ui.button.click"), Sound.Source.MASTER, 1F, 2F));
+                                if(cooldown != null && !cooldown.hasExpired()) {
+                                    player.sendActionBar(MC.Style.component("You are on cooldown for another " + cooldown.getSecondsRemaining() + " seconds.", MC.CC.RED));
+                                    player.playSound(Sound.sound(Key.key("block.note_block.bass"), Sound.Source.MASTER, 1F, 0.5F));
+                                } else {
+                                    manager.putCooldown(player.getUuid(), CooldownType.VISIBILITY);
+                                    int index = itemStack.getTag(Tag.Integer("index"));
+
+                                    Visibility visibility = new CyclicIterator<>(Visibility.values(), index).next();
+
+                                    player.getInventory().setItemStack(8, visibility.getItemStack());
+                                    player.playSound(Sound.sound(Key.key("ui.button.click"), Sound.Source.MASTER, 1F, 2F));
+
+                                    ProfileUtil.getAssociatedProfile(player).thenAccept(profile -> profile.getOptionsProfile().setVisibilityIndex(index));
+                                }
                                 break;
                         }
                     }
@@ -68,19 +93,37 @@ public class PlayerListener {
                 .addListener(PlayerLoginEvent.class, event -> {
                     final Player player = event.getPlayer();
 
-                    event.setSpawningInstance(HubManager.getRandomInstance());
-                    player.setRespawnPoint(Hub.spawn);
+                    event.setSpawningInstance(HubManager.getRandomInstance().getInstance());
+                    player.setRespawnPoint(Hub.getHub().getSpawn());
                 })
-                .addListener(PlayerDisconnectEvent.class, event -> HubSidebar.getSidebars().get(event.getPlayer().getUuid()).remove())
-                .addListener(PlayerSpawnEvent.class, event -> {
-                    final Player player = event.getPlayer();
+                .addListener(PlayerDisconnectEvent.class, event -> {
+                    final var player = event.getPlayer();
 
-                    Integer playerVisibility = Visibility.ALL.ordinal();
-//                    HubExtension.visibilityMap.put(player.getUuid(), playerVisibility);
+                    RankUtil.hasMinimumRank(player, Rank.getRank("Owner"), rankCallback -> {
+                        if (rankCallback.isMinimum()) {
+                            Profile profile = rankCallback.getProfile();
+
+                            Instance instance = player.getInstance();
+
+                            if(instance != null)
+                                instance.sendMessage(MC.Chat.notificationMessage("Lobby",
+                                        Component.text()
+                                                .append(
+                                                        profile.api().getChatFormat(),
+                                                        Component.text(" has joined the lobby!", profile.api().getActiveGrant().api().getRank().api().getRankColor().getTextColor())
+                                                ).build()
+                                ));
+                        }
+                    });
+
+                    HubSidebar.getSidebars().get(event.getPlayer().getUuid()).remove();
+                })
+                .addListener(PlayerSpawnEvent.class, event -> {
+                    final var player = event.getPlayer();
 
                     new HubSidebar(player);
 
-                    player.sendMessage(MC.Style.SEPARATOR);
+                    player.sendMessage(MC.Style.SEPARATOR_80);
                     player.sendMessage(Component.empty());
                     player.sendMessage(Component.text()
                             .append(Component.text("Welcome to the ", MC.CC.GRAY.getTextColor()))
@@ -103,7 +146,7 @@ public class PlayerListener {
                             .append(Component.text("Twitter: ", MC.CC.GOLD.getTextColor()))
                             .append(Component.text("https://twitter.com/minetalecc", MC.CC.GRAY.getTextColor())));
                     player.sendMessage(Component.empty());
-                    player.sendMessage(MC.Style.SEPARATOR);
+                    player.sendMessage(MC.Style.SEPARATOR_80);
 
                     player.setGameMode(GameMode.ADVENTURE);
 
@@ -112,18 +155,34 @@ public class PlayerListener {
                     inventory.setItemStack(0, ItemUtil.SERVER_SELECTOR);
                     inventory.setItemStack(1, ItemUtil.SHOP);
                     inventory.setItemStack(4, ItemUtil.PROFILE(player));
-                    inventory.setItemStack(7, ItemUtil.COSMETIC_SELECTOR);
-                    inventory.setItemStack(8, ItemUtil.VISIBILITY_ITEM(player.getUuid()));
+                    inventory.setItemStack(7, ItemUtil.LOBBY_SELECTOR);
+                    ItemUtil.VISIBILITY_ITEM(player, item -> inventory.setItemStack(8, item));
 
                     player.setAllowFlying(true);
 
                     player.sendPlayerListHeaderAndFooter(Tab.header(), Tab.footer(player));
 
                     player.playSound(Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 1F, 2F));
-                    player.sendMessage(MC.Style.component("Current Instance: " + HubManager.getName(player.getInstance()), MC.CC.GOLD));
 
                     player.showTitle(Title.title(Component.text("Welcome", MC.CC.GOLD.getTextColor()), Component.text("Welcome to MineTale", MC.CC.GRAY.getTextColor()),
                             Title.Times.of(Duration.ofSeconds(1), Duration.ofSeconds(3), Duration.ofSeconds(1))));
+
+                    RankUtil.hasMinimumRank(player, Rank.getRank("Owner"), rankCallback -> {
+                        if (rankCallback.isMinimum()) {
+                            Profile profile = rankCallback.getProfile();
+
+                            Instance instance = player.getInstance();
+
+                            if(instance != null)
+                                player.getInstance().sendMessage(MC.Chat.notificationMessage("Lobby",
+                                        Component.text()
+                                                .append(
+                                                        profile.api().getChatFormat(),
+                                                        Component.text(" has joined the lobby.", profile.api().getActiveGrant().api().getRank().api().getRankColor().getTextColor())
+                                                ).build()
+                                ));
+                        }
+                    });
                 });
     }
 }

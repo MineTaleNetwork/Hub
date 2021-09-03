@@ -20,13 +20,13 @@ public class ServerSelector extends Inventory {
             this.setItemStack(i, ItemStack.of(Material.GRAY_STAINED_GLASS_PANE).withDisplayName(Component.empty()));
         }
 
-        this.setItemStack(10, ItemUtil.getSkyBlockItem());
-        this.setItemStack(12, ItemUtil.getSkyWarsItem());
-        this.setItemStack(14, ItemUtil.getPracticeItem());
+        this.setItemStack(10, ItemUtil.getPracticeItem());
+        this.setItemStack(12, ItemUtil.getParkourItem());
+        this.setItemStack(14, ItemUtil.getWoolWarsItem());
         this.setItemStack(16, ItemUtil.getBedWarsItem());
         this.setItemStack(28, ItemUtil.getHousingItem());
         this.setItemStack(30, ItemUtil.getArcadeGamesItem());
-        this.setItemStack(32, ItemUtil.getWoolWarsItem());
-        this.setItemStack(34, ItemUtil.getParkourItem());
+        this.setItemStack(32, ItemUtil.getSkyBlockItem());
+        this.setItemStack(34, ItemUtil.getSkyWarsItem());
     }
 }

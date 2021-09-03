@@ -1,8 +1,8 @@
 package cc.minetale.hub.sidebar;
 
 import cc.minetale.mlib.util.ProfileUtil;
-import com.customwrld.commonlib.modules.rank.Rank;
-import com.customwrld.commonlib.util.MC;
+import cc.minetale.commonlib.modules.rank.Rank;
+import cc.minetale.commonlib.util.MC;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -20,7 +20,7 @@ public class HubSidebar extends Sidebar {
     public HubSidebar(Player player) {
         super(Component.text("MineTale Network", MC.CC.GOLD.getTextColor(), TextDecoration.BOLD));
 
-        this.createLine(new Sidebar.ScoreboardLine("9", MC.Style.SCOREBOARD_SEPARATOR, 9));
+        this.createLine(new Sidebar.ScoreboardLine("9", MC.Style.SEPARATOR_32, 9));
         this.createLine(new Sidebar.ScoreboardLine("8", Component.text("Online Players", MC.CC.GOLD.getTextColor(), TextDecoration.BOLD), 8));
         this.createLine(new Sidebar.ScoreboardLine("7", Component.text()
                 .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
@@ -34,7 +34,7 @@ public class HubSidebar extends Sidebar {
                 .build(), 4));
         this.createLine(new Sidebar.ScoreboardLine("3", Component.empty(), 3));
         this.createLine(new Sidebar.ScoreboardLine("2", Component.text("minetale.cc", MC.CC.GOLD.getTextColor()), 2));
-        this.createLine(new Sidebar.ScoreboardLine("1", MC.Style.SCOREBOARD_SEPARATOR, 1));
+        this.createLine(new Sidebar.ScoreboardLine("1", MC.Style.SEPARATOR_32, 1));
 
         this.player = player;
 

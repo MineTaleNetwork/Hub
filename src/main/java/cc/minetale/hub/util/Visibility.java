@@ -1,6 +1,8 @@
 package cc.minetale.hub.util;
 
-import com.customwrld.commonlib.util.MC;
+import cc.minetale.commonlib.util.MC;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.color.Color;
@@ -14,6 +16,8 @@ import net.minestom.server.tag.Tag;
 
 import java.util.Collections;
 
+@Getter
+@AllArgsConstructor
 public enum Visibility {
     ALL(ItemStack.of(Material.FIREWORK_STAR)
             .withDisplayName(Component.text()
@@ -26,10 +30,11 @@ public enum Visibility {
                 meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, Collections.singletonList(new Color(color.getRed(), color.getGreen(), color.getBlue())), Collections.singletonList(new Color(color.getRed(), color.getGreen(), color.getBlue()))));
                 meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
             })
-            .withTag(Tag.String("type"), "VISIBILITY_SELECTOR")),
+            .withTag(Tag.String("type"), "VISIBILITY_SELECTOR")
+            .withTag(Tag.Integer("index"), 0)),
     STAFF_AND_FRIENDS(ItemStack.of(Material.FIREWORK_STAR)
             .withDisplayName(Component.text()
-                    .append(MC.Style.component("Staff and VIPs Visible ", MC.CC.GREEN, TextDecoration.BOLD))
+                    .append(MC.Style.component("Staff and VIPs Visible ", MC.CC.DARK_PURPLE, TextDecoration.BOLD))
                     .append(MC.Style.component("(Right Click)", MC.CC.GRAY))
                     .build())
             .withLore(Collections.singletonList(MC.Style.component("Right Click to cycle through visibility!", MC.CC.GRAY)))
@@ -38,10 +43,11 @@ public enum Visibility {
                 meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, Collections.singletonList(new Color(color.getRed(), color.getGreen(), color.getBlue())), Collections.singletonList(new Color(color.getRed(), color.getGreen(), color.getBlue()))));
                 meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
             })
-            .withTag(Tag.String("type"), "VISIBILITY_SELECTOR")),
+            .withTag(Tag.String("type"), "VISIBILITY_SELECTOR")
+            .withTag(Tag.Integer("index"), 1)),
     NONE(ItemStack.of(Material.FIREWORK_STAR)
             .withDisplayName(Component.text()
-                    .append(MC.Style.component("No Players Visible ", MC.CC.GREEN, TextDecoration.BOLD))
+                    .append(MC.Style.component("No Players Visible ", MC.CC.RED, TextDecoration.BOLD))
                     .append(MC.Style.component("(Right Click)", MC.CC.GRAY))
                     .build())
             .withLore(Collections.singletonList(MC.Style.component("Right Click to cycle through visibility!", MC.CC.GRAY)))
@@ -50,12 +56,9 @@ public enum Visibility {
                 meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, Collections.singletonList(new Color(color.getRed(), color.getGreen(), color.getBlue())), Collections.singletonList(new Color(color.getRed(), color.getGreen(), color.getBlue()))));
                 meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
             })
-            .withTag(Tag.String("type"), "VISIBILITY_SELECTOR"));
+            .withTag(Tag.String("type"), "VISIBILITY_SELECTOR")
+            .withTag(Tag.Integer("index"), 2));
 
-    public final ItemStack itemStack;
-
-    Visibility(ItemStack itemStack) {
-        this.itemStack = itemStack;
-    }
+    private final ItemStack itemStack;
 
 }

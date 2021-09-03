@@ -1,7 +1,7 @@
 package cc.minetale.hub.tab;
 
 import cc.minetale.mlib.mLib;
-import com.customwrld.commonlib.util.MC;
+import cc.minetale.commonlib.util.MC;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.entity.Player;

@@ -24,8 +24,8 @@ public class CyclicIterator<T> implements Iterator<T> {
 
     @Override
     public T next() {
-        current = (current + 1) % values.length;
-        return values[current];
+        this.current = (this.current + 1) % this.values.length;
+        return this.values[current];
     }
 
 }

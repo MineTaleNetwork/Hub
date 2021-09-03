@@ -3,6 +3,7 @@
   "name": "Hub",
   "mixinConfig": "mixins.extension.json",
   "dependencies": [
-    "mLib"
+    "mLib",
+    "Flame"
   ]
 }

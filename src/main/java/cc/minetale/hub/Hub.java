@@ -4,8 +4,9 @@ import cc.minetale.hub.listener.PlayerListener;
 import cc.minetale.hub.manager.HubManager;
 import cc.minetale.hub.sidebar.HubSidebar;
 import cc.minetale.hub.tab.Tab;
-import cc.minetale.hub.util.HubUtil;
+import cc.minetale.hub.util.cooldown.CooldownManager;
 import cc.minetale.quartz.generator.VoidGenerator;
+import lombok.Getter;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
@@ -22,36 +23,44 @@ import net.minestom.server.utils.chunk.ChunkUtils;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
+@Getter
 public class Hub extends Extension {
 
-    public static InstanceContainer instance = MinecraftServer.getInstanceManager().createInstanceContainer();
-    public static Pos spawn = new Pos(0, 64, 0);
+    @Getter private static Hub hub;
+    private InstanceContainer instanceContainer;
+    private CooldownManager cooldownManager;
+    private Pos spawn;
 
     @Override
     public void initialize() {
-        instance.setChunkGenerator(new VoidGenerator());
+        hub = this;
 
-        HubManager.createHubs(1);
+        this.instanceContainer = MinecraftServer.getInstanceManager().createInstanceContainer();
+        this.instanceContainer.setChunkGenerator(new VoidGenerator());
+
+        this.cooldownManager = new CooldownManager();
+
+        this.spawn = new Pos(0, 64, 0);
+
+        HubManager.createHubs(50);
 
         var positions = new Pos[]{new Pos(0.5, 60, 0.5), new Pos(-0.5, 60, -0.5), new Pos(-0.5, 60, 0.5), new Pos(0.5, 60, -0.5)};
 
-        // TODO: Improve this
-
-        ChunkUtils.optionalLoadAll(instance, ChunkUtils.getChunksInRange(new Pos(0.0, 0, 0.0), 2), (chunk) -> {}).thenAccept((Void) -> {
-            for(SharedInstance sharedInstance : instance.getSharedInstances()) {
+        ChunkUtils.optionalLoadAll(this.instanceContainer, ChunkUtils.getChunksInRange(new Pos(0.0, 0, 0.0), 2), (chunk) -> {}).thenAccept((Void) -> {
+            for(SharedInstance sharedInstance : this.instanceContainer.getSharedInstances()) {
                 WorldBorder border = sharedInstance.getWorldBorder();
                 border.setCenterX(0.0F);
                 border.setCenterZ(0.0F);
                 border.setDiameter(64F);
             }
 
-            instance.enableAutoChunkLoad(false);
+            this.instanceContainer.enableAutoChunkLoad(false);
 
             for(Pos pos : positions) {
-                instance.setBlock(pos, Block.BEDROCK);
+                this.instanceContainer.setBlock(pos, Block.BEDROCK);
             }
 
-            HubUtil.lockAllChunks(instance);
+            HubManager.lockAllChunks(this.instanceContainer);
         });
 
         MinecraftServer.getSchedulerManager().buildTask(() -> {

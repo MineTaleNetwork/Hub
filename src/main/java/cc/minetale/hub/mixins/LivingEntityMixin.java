@@ -24,7 +24,7 @@ public class LivingEntityMixin extends Entity {
     protected void handleVoid() {
         // Teleport if in void
         if (getInstance().isInVoid(this.position)) {
-            teleport(Hub.spawn);
+            teleport(Hub.getHub().getSpawn());
         }
     }
 
