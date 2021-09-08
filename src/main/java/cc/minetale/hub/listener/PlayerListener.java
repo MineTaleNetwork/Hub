@@ -61,7 +61,7 @@ public class PlayerListener {
                             }
                             case "SHOP":
                             case "PROFILE":
-                                player.sendMessage(Component.text("This item is currently under development.", MC.CC.RED.getTextColor()));
+                                player.sendActionBar(Component.text("This item is currently under development.", MC.CC.RED.getTextColor()));
                                 player.playSound(Sound.sound(Key.key("block.note_block.bass"), Sound.Source.MASTER, 1F, 0.5F));
                                 break;
                             case "LOBBY_SELECTOR":
