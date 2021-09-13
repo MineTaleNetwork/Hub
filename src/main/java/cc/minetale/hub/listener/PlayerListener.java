@@ -20,6 +20,7 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventFilter;
@@ -33,6 +34,7 @@ import net.minestom.server.inventory.PlayerInventory;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.entity.EntityFinder;
+import net.minestom.server.utils.time.Tick;
 
 import java.time.Duration;
 
@@ -73,7 +75,7 @@ public class PlayerListener {
                                 Cooldown cooldown = manager.getCooldownByType(player.getUuid(), CooldownType.VISIBILITY);
 
                                 if(cooldown != null && !cooldown.hasExpired()) {
-                                    player.sendActionBar(MC.Style.component("You are on cooldown for another " + cooldown.getSecondsRemaining() + " seconds.", MC.CC.RED));
+                                    player.sendActionBar(MC.component("You are on cooldown for another " + cooldown.getSecondsRemaining() + " seconds.", MC.CC.RED));
                                     player.playSound(Sound.sound(Key.key("block.note_block.bass"), Sound.Source.MASTER, 1F, 0.5F));
                                 } else {
                                     manager.putCooldown(player.getUuid(), CooldownType.VISIBILITY);
@@ -110,7 +112,7 @@ public class PlayerListener {
                                         Component.text()
                                                 .append(
                                                         profile.api().getChatFormat(),
-                                                        Component.text(" has joined the lobby!", profile.api().getActiveGrant().api().getRank().api().getRankColor().getTextColor())
+                                                        Component.text(" has joined the lobby!", profile.getGrant().api().getRank().api().getRankColor().getTextColor())
                                                 ).build()
                                 ));
                         }
@@ -162,10 +164,12 @@ public class PlayerListener {
 
                     player.sendPlayerListHeaderAndFooter(Tab.header(), Tab.footer(player));
 
-                    player.playSound(Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 1F, 2F));
-
                     player.showTitle(Title.title(Component.text("Welcome", MC.CC.GOLD.getTextColor()), Component.text("Welcome to MineTale", MC.CC.GRAY.getTextColor()),
                             Title.Times.of(Duration.ofSeconds(1), Duration.ofSeconds(3), Duration.ofSeconds(1))));
+
+                    MinecraftServer.getSchedulerManager().buildTask(() -> {
+                        player.playSound(Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 1F, 2F));
+                    }).delay(Tick.server(5)).schedule();
 
                     RankUtil.hasMinimumRank(player, Rank.getRank("Owner"), rankCallback -> {
                         if (rankCallback.isMinimum()) {
@@ -173,14 +177,14 @@ public class PlayerListener {
 
                             Instance instance = player.getInstance();
 
-                            if(instance != null)
-                                player.getInstance().sendMessage(MC.Chat.notificationMessage("Lobby",
-                                        Component.text()
-                                                .append(
-                                                        profile.api().getChatFormat(),
-                                                        Component.text(" has joined the lobby.", profile.api().getActiveGrant().api().getRank().api().getRankColor().getTextColor())
-                                                ).build()
+                            if (instance != null) {
+                                instance.sendMessage(MC.Chat.notificationMessage("Lobby",
+                                        MC.component(
+                                                profile.api().getChatFormat(),
+                                                MC.component(" has joined the lobby.", profile.getGrant().api().getRank().api().getRankColor())
+                                        )
                                 ));
+                            }
                         }
                     });
                 });

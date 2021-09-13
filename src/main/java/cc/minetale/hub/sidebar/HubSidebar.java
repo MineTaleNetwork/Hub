@@ -1,5 +1,6 @@
 package cc.minetale.hub.sidebar;
 
+import cc.minetale.flame.Flame;
 import cc.minetale.mlib.util.ProfileUtil;
 import cc.minetale.commonlib.modules.rank.Rank;
 import cc.minetale.commonlib.util.MC;
@@ -48,11 +49,11 @@ public class HubSidebar extends Sidebar {
     public void update() {
         this.updateLineContent("7", Component.text()
                 .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
-                .append(Component.text(ThreadLocalRandom.current().nextInt(1000) + "/1000", MC.CC.WHITE.getTextColor()))
+                .append(Component.text(Flame.getFlame().getGlobalPlayers() + "/10000", MC.CC.WHITE.getTextColor()))
                 .build());
 
         ProfileUtil.getAssociatedProfile(this.player).thenAccept(profile -> {
-            Rank rank = profile.api().getActiveGrant().api().getRank();
+            Rank rank = profile.getGrant().api().getRank();
 
             this.updateLineContent("4", Component.text()
                     .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
