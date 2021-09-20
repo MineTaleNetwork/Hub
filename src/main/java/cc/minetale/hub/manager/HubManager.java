@@ -1,7 +1,9 @@
 package cc.minetale.hub.manager;
 
 import cc.minetale.hub.Hub;
+import cc.minetale.hub.util.HubNPCS;
 import cc.minetale.hub.util.LobbyInstance;
+import cc.minetale.mlib.npc.NPC;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
@@ -16,6 +18,10 @@ public class HubManager {
     public static void createHubs(int amount) {
         for(int i = 1; i <= amount; i++) {
             SharedInstance instance = MinecraftServer.getInstanceManager().createSharedInstance(Hub.getHub().getInstanceContainer());
+
+            for (HubNPCS npc : HubNPCS.values()) {
+                npc.spawn(instance);
+            }
 
             LobbyInstance.getHubMap().put(instance.getUniqueId(), new LobbyInstance(instance, i));
         }

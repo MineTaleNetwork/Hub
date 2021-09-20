@@ -41,8 +41,6 @@ public class Hub extends Extension {
     public void initialize() {
         hub = this;
 
-//        final Hologram hologram = new Hologram(instance, npc.homePosition().add(0, npc.getEyeHeight() + 0.05, 0), Component.text(""));
-
         this.instanceContainer = MinecraftServer.getInstanceManager().createInstanceContainer();
         this.instanceContainer.setChunkGenerator(new VoidGenerator());
 
