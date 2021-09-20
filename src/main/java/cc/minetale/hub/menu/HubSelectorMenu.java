@@ -1,7 +1,7 @@
 package cc.minetale.hub.menu;
 
 import cc.minetale.commonlib.util.MC;
-import cc.minetale.flame.util.MenuUtils;
+import cc.minetale.flame.util.MenuUtil;
 import cc.minetale.hub.Hub;
 import cc.minetale.hub.util.cooldown.Cooldown;
 import cc.minetale.hub.util.LobbyInstance;
@@ -12,6 +12,7 @@ import cc.minetale.mlib.fabric.FabricInventory;
 import cc.minetale.mlib.fabric.content.FabricContents;
 import cc.minetale.mlib.fabric.content.FabricProvider;
 import cc.minetale.mlib.fabric.content.Pagination;
+import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
@@ -28,23 +29,22 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+@Getter
 public class HubSelectorMenu implements FabricProvider {
 
     private final FabricInventory inventory;
 
-    public HubSelectorMenu(Player player) {
+    public HubSelectorMenu() {
         this.inventory = FabricInventory.builder()
                 .provider(this)
                 .type(InventoryType.CHEST_5_ROW)
                 .build();
-
-        this.inventory.open(player);
     }
 
     @Override
     public void init(Player player, FabricContents contents) {
-        contents.fill(MenuUtils.FILLER);
-        contents.fill(MenuUtils.AIR, 9, 35);
+        contents.fill(MenuUtil.FILLER);
+        contents.fill(MenuUtil.AIR, 9, 35);
 
         List<LobbyInstance> lobbyInstances = new ArrayList<>(LobbyInstance.getHubMap().values());
 
@@ -101,8 +101,8 @@ public class HubSelectorMenu implements FabricProvider {
         pagination.setItemsPerPage(27);
         pagination.addToIterator(contents.iterator(9));
 
-        MenuUtils.addPreviousPage(39, this.inventory, contents, "Lobbies");
-        MenuUtils.addNextPage(41, this.inventory, contents, "Lobbies");
+        MenuUtil.addPreviousPage(39, this.inventory, contents, "Lobbies");
+        MenuUtil.addNextPage(41, this.inventory, contents, "Lobbies");
     }
 
     @Override
@@ -110,6 +110,6 @@ public class HubSelectorMenu implements FabricProvider {
         Inventory inventory = event.getInventory();
 
         if(inventory != null)
-            MenuUtils.setPaginatedTitle(inventory, contents.getPagination(), "Lobbies");
+            MenuUtil.setPaginatedTitle(inventory, contents.getPagination(), "Lobbies");
     }
 }

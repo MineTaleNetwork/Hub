@@ -7,9 +7,9 @@ import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 
-public class ServerSelector extends Inventory {
+public class ServerSelectorMenu extends Inventory {
 
-    public ServerSelector() {
+    public ServerSelectorMenu() {
         super(InventoryType.CHEST_5_ROW, "Server Selector");
 
         this.addInventoryCondition((player, slot, clickType, result) -> {

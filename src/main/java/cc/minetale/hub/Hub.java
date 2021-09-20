@@ -2,6 +2,8 @@ package cc.minetale.hub;
 
 import cc.minetale.hub.listener.PlayerListener;
 import cc.minetale.hub.manager.HubManager;
+import cc.minetale.hub.menu.HubSelectorMenu;
+import cc.minetale.hub.menu.ServerSelectorMenu;
 import cc.minetale.hub.sidebar.HubSidebar;
 import cc.minetale.hub.tab.Tab;
 import cc.minetale.hub.util.cooldown.CooldownManager;
@@ -26,19 +28,28 @@ import java.time.temporal.ChronoUnit;
 @Getter
 public class Hub extends Extension {
 
+    // TODO: Make ServerSelector Fabric & make each inventory update online players
+
     @Getter private static Hub hub;
     private InstanceContainer instanceContainer;
     private CooldownManager cooldownManager;
+    private ServerSelectorMenu serverSelectorMenu;
+    private HubSelectorMenu hubSelectorMenu;
     private Pos spawn;
 
     @Override
     public void initialize() {
         hub = this;
 
+//        final Hologram hologram = new Hologram(instance, npc.homePosition().add(0, npc.getEyeHeight() + 0.05, 0), Component.text(""));
+
         this.instanceContainer = MinecraftServer.getInstanceManager().createInstanceContainer();
         this.instanceContainer.setChunkGenerator(new VoidGenerator());
 
         this.cooldownManager = new CooldownManager();
+
+        this.serverSelectorMenu = new ServerSelectorMenu();
+        this.hubSelectorMenu = new HubSelectorMenu();
 
         this.spawn = new Pos(0, 64, 0);
 

@@ -1,13 +1,10 @@
 package cc.minetale.hub.listener;
 
-import cc.minetale.commonlib.modules.profile.Profile;
-import cc.minetale.commonlib.modules.rank.Rank;
 import cc.minetale.commonlib.util.MC;
-import cc.minetale.flame.commands.RankUtil;
 import cc.minetale.hub.Hub;
 import cc.minetale.hub.manager.HubManager;
 import cc.minetale.hub.menu.HubSelectorMenu;
-import cc.minetale.hub.menu.ServerSelector;
+import cc.minetale.hub.menu.ServerSelectorMenu;
 import cc.minetale.hub.sidebar.HubSidebar;
 import cc.minetale.hub.tab.Tab;
 import cc.minetale.hub.util.*;
@@ -29,11 +26,9 @@ import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.*;
 import net.minestom.server.event.trait.EntityEvent;
-import net.minestom.server.instance.Instance;
 import net.minestom.server.inventory.PlayerInventory;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.tag.Tag;
-import net.minestom.server.utils.entity.EntityFinder;
 import net.minestom.server.utils.time.Tick;
 
 import java.time.Duration;
@@ -58,7 +53,7 @@ public class PlayerListener {
 
                         switch (type) {
                             case "SERVER_SELECTOR": {
-                                player.openInventory(new ServerSelector());
+                                player.openInventory(new ServerSelectorMenu());
                                 break;
                             }
                             case "SHOP":
@@ -67,7 +62,7 @@ public class PlayerListener {
                                 player.playSound(Sound.sound(Key.key("block.note_block.bass"), Sound.Source.MASTER, 1F, 0.5F));
                                 break;
                             case "LOBBY_SELECTOR":
-                                new HubSelectorMenu(player);
+                                Hub.getHub().getHubSelectorMenu().getInventory().open(player);
                                 break;
                             case "VISIBILITY_SELECTOR":
                                 CooldownManager manager = Hub.getHub().getCooldownManager();
@@ -101,54 +96,58 @@ public class PlayerListener {
                 .addListener(PlayerDisconnectEvent.class, event -> {
                     final var player = event.getPlayer();
 
-                    RankUtil.hasMinimumRank(player, Rank.getRank("Owner"), rankCallback -> {
-                        if (rankCallback.isMinimum()) {
-                            Profile profile = rankCallback.getProfile();
+//                    RankUtil.hasMinimumRank(player, Rank.getRank("Owner"), rankCallback -> {
+//                        if (rankCallback.isMinimum()) {
+//                            Profile profile = rankCallback.getProfile();
+//
+//                            Instance instance = player.getInstance();
+//
+//                            if(instance != null)
+//                                instance.sendMessage(MC.Chat.notificationMessage("Lobby",
+//                                        Component.text()
+//                                                .append(
+//                                                        profile.api().getChatFormat(),
+//                                                        Component.text(" has left the lobby.", profile.getGrant().api().getRank().api().getRankColor().getTextColor())
+//                                                ).build()
+//                                ));
+//                        }
+//                    });
+                    HubSidebar sidebar = HubSidebar.getSidebars().get(event.getPlayer().getUuid());
 
-                            Instance instance = player.getInstance();
-
-                            if(instance != null)
-                                instance.sendMessage(MC.Chat.notificationMessage("Lobby",
-                                        Component.text()
-                                                .append(
-                                                        profile.api().getChatFormat(),
-                                                        Component.text(" has joined the lobby!", profile.getGrant().api().getRank().api().getRankColor().getTextColor())
-                                                ).build()
-                                ));
-                        }
-                    });
-
-                    HubSidebar.getSidebars().get(event.getPlayer().getUuid()).remove();
+                    if(sidebar != null)
+                        sidebar.remove();
                 })
                 .addListener(PlayerSpawnEvent.class, event -> {
                     final var player = event.getPlayer();
 
                     new HubSidebar(player);
 
-                    player.sendMessage(MC.Style.SEPARATOR_80);
-                    player.sendMessage(Component.empty());
-                    player.sendMessage(Component.text()
-                            .append(Component.text("Welcome to the ", MC.CC.GRAY.getTextColor()))
-                            .append(Component.text("MineTale Network", MC.CC.GOLD.getTextColor(), TextDecoration.BOLD)));
-                    player.sendMessage(Component.empty());
-                    player.sendMessage(Component.text()
-                            .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
-                            .append(Component.text("Website: ", MC.CC.GOLD.getTextColor()))
-                            .append(Component.text("https://minetale.cc", MC.CC.GRAY.getTextColor())));
-                    player.sendMessage(Component.text()
-                            .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
-                            .append(Component.text("Store: ", MC.CC.GOLD.getTextColor()))
-                            .append(Component.text("https://store.minetale.cc", MC.CC.GRAY.getTextColor())));
-                    player.sendMessage(Component.text()
-                            .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
-                            .append(Component.text("Discord: ", MC.CC.GOLD.getTextColor()))
-                            .append(Component.text("https://discord.minetale.cc", MC.CC.GRAY.getTextColor())));
-                    player.sendMessage(Component.text()
-                            .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
-                            .append(Component.text("Twitter: ", MC.CC.GOLD.getTextColor()))
-                            .append(Component.text("https://twitter.com/minetalecc", MC.CC.GRAY.getTextColor())));
-                    player.sendMessage(Component.empty());
-                    player.sendMessage(MC.Style.SEPARATOR_80);
+                    if(event.isFirstSpawn()) {
+                        player.sendMessage(MC.Style.SEPARATOR_80);
+                        player.sendMessage(Component.empty());
+                        player.sendMessage(Component.text()
+                                .append(Component.text("Welcome to the ", MC.CC.GRAY.getTextColor()))
+                                .append(Component.text("MineTale Network", MC.CC.GOLD.getTextColor(), TextDecoration.BOLD)));
+                        player.sendMessage(Component.empty());
+                        player.sendMessage(Component.text()
+                                .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
+                                .append(Component.text("Website: ", MC.CC.GOLD.getTextColor()))
+                                .append(Component.text("https://minetale.cc", MC.CC.GRAY.getTextColor())));
+                        player.sendMessage(Component.text()
+                                .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
+                                .append(Component.text("Store: ", MC.CC.GOLD.getTextColor()))
+                                .append(Component.text("https://store.minetale.cc", MC.CC.GRAY.getTextColor())));
+                        player.sendMessage(Component.text()
+                                .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
+                                .append(Component.text("Discord: ", MC.CC.GOLD.getTextColor()))
+                                .append(Component.text("https://discord.minetale.cc", MC.CC.GRAY.getTextColor())));
+                        player.sendMessage(Component.text()
+                                .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
+                                .append(Component.text("Twitter: ", MC.CC.GOLD.getTextColor()))
+                                .append(Component.text("https://twitter.com/minetalecc", MC.CC.GRAY.getTextColor())));
+                        player.sendMessage(Component.empty());
+                        player.sendMessage(MC.Style.SEPARATOR_80);
+                    }
 
                     player.setGameMode(GameMode.ADVENTURE);
 
@@ -171,22 +170,22 @@ public class PlayerListener {
                         player.playSound(Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 1F, 2F));
                     }).delay(Tick.server(5)).schedule();
 
-                    RankUtil.hasMinimumRank(player, Rank.getRank("Owner"), rankCallback -> {
-                        if (rankCallback.isMinimum()) {
-                            Profile profile = rankCallback.getProfile();
-
-                            Instance instance = player.getInstance();
-
-                            if (instance != null) {
-                                instance.sendMessage(MC.Chat.notificationMessage("Lobby",
-                                        MC.component(
-                                                profile.api().getChatFormat(),
-                                                MC.component(" has joined the lobby.", profile.getGrant().api().getRank().api().getRankColor())
-                                        )
-                                ));
-                            }
-                        }
-                    });
+//                    RankUtil.hasMinimumRank(player, Rank.getRank("Owner"), rankCallback -> {
+//                        if (rankCallback.isMinimum()) {
+//                            Profile profile = rankCallback.getProfile();
+//
+//                            Instance instance = player.getInstance();
+//
+//                            if (instance != null) {
+//                                instance.sendMessage(MC.Chat.notificationMessage("Lobby",
+//                                        MC.component(
+//                                                profile.api().getChatFormat(),
+//                                                MC.component(" has joined the lobby.", profile.getGrant().api().getRank().api().getRankColor())
+//                                        )
+//                                ));
+//                            }
+//                        }
+//                    });
                 });
     }
 }
