@@ -6,6 +6,7 @@ import cc.minetale.hub.menu.HubSelectorMenu;
 import cc.minetale.hub.menu.ServerSelectorMenu;
 import cc.minetale.hub.sidebar.HubSidebar;
 import cc.minetale.hub.tab.Tab;
+import cc.minetale.hub.util.HubPlayer;
 import cc.minetale.hub.util.cooldown.CooldownManager;
 import cc.minetale.quartz.generator.VoidGenerator;
 import lombok.Getter;
@@ -40,6 +41,8 @@ public class Hub extends Extension {
     @Override
     public void initialize() {
         hub = this;
+
+        MinecraftServer.getConnectionManager().setPlayerProvider(HubPlayer::new);
 
         this.instanceContainer = MinecraftServer.getInstanceManager().createInstanceContainer();
         this.instanceContainer.setChunkGenerator(new VoidGenerator());
