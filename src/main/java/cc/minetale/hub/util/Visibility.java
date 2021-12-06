@@ -4,6 +4,7 @@ import cc.minetale.commonlib.util.MC;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.color.Color;
 import net.minestom.server.item.ItemHideFlag;
@@ -20,13 +21,14 @@ import java.util.Collections;
 @AllArgsConstructor
 public enum Visibility {
     ALL(ItemStack.of(Material.FIREWORK_STAR)
-            .withDisplayName(Component.text()
-                    .append(MC.component("All Players Visible ", MC.CC.GREEN, TextDecoration.BOLD))
-                    .append(MC.component("(Right Click)", MC.CC.GRAY))
-                    .build())
-            .withLore(Collections.singletonList(MC.component("Right Click to cycle through visibility!", MC.CC.GRAY)))
+            .withDisplayName(Component.text().append(
+                    Component.text("All Players Visible ", NamedTextColor.GREEN, TextDecoration.BOLD),
+                    Component.text("(Right Click)", NamedTextColor.GRAY)
+            ).build())
+            .withLore(Collections.singletonList(Component.text("Right Click to cycle through visibility!", NamedTextColor.GRAY)))
             .withMeta(FireworkEffectMeta.class, meta -> {
-                java.awt.Color color = MC.CC.GREEN.getColor();
+                var color = MC.fromNamedTextColor(NamedTextColor.GREEN);
+
                 meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, Collections.singletonList(new Color(color.getRed(), color.getGreen(), color.getBlue())), Collections.singletonList(new Color(color.getRed(), color.getGreen(), color.getBlue()))));
                 meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
             })
@@ -34,12 +36,13 @@ public enum Visibility {
             .withTag(Tag.Integer("index"), 0)),
     STAFF_AND_FRIENDS(ItemStack.of(Material.FIREWORK_STAR)
             .withDisplayName(Component.text()
-                    .append(MC.component("Staff and VIPs Visible ", MC.CC.DARK_PURPLE, TextDecoration.BOLD))
-                    .append(MC.component("(Right Click)", MC.CC.GRAY))
+                    .append(Component.text("Staff and VIPs Visible ", NamedTextColor.DARK_PURPLE, TextDecoration.BOLD))
+                    .append(Component.text("(Right Click)", NamedTextColor.GRAY))
                     .build())
-            .withLore(Collections.singletonList(MC.component("Right Click to cycle through visibility!", MC.CC.GRAY)))
+            .withLore(Collections.singletonList(Component.text("Right Click to cycle through visibility!", NamedTextColor.GRAY)))
             .withMeta(FireworkEffectMeta.class, meta -> {
-                java.awt.Color color = MC.CC.DARK_PURPLE.getColor();
+                var color = MC.fromNamedTextColor(NamedTextColor.DARK_PURPLE);
+
                 meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, Collections.singletonList(new Color(color.getRed(), color.getGreen(), color.getBlue())), Collections.singletonList(new Color(color.getRed(), color.getGreen(), color.getBlue()))));
                 meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
             })
@@ -47,12 +50,13 @@ public enum Visibility {
             .withTag(Tag.Integer("index"), 1)),
     NONE(ItemStack.of(Material.FIREWORK_STAR)
             .withDisplayName(Component.text()
-                    .append(MC.component("No Players Visible ", MC.CC.RED, TextDecoration.BOLD))
-                    .append(MC.component("(Right Click)", MC.CC.GRAY))
+                    .append(Component.text("No Players Visible ", NamedTextColor.RED, TextDecoration.BOLD))
+                    .append(Component.text("(Right Click)", NamedTextColor.GRAY))
                     .build())
-            .withLore(Collections.singletonList(MC.component("Right Click to cycle through visibility!", MC.CC.GRAY)))
+            .withLore(Collections.singletonList(Component.text("Right Click to cycle through visibility!", NamedTextColor.GRAY)))
             .withMeta(FireworkEffectMeta.class, meta -> {
-                java.awt.Color color = MC.CC.RED.getColor();
+                var color = MC.fromNamedTextColor(NamedTextColor.RED);
+
                 meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, Collections.singletonList(new Color(color.getRed(), color.getGreen(), color.getBlue())), Collections.singletonList(new Color(color.getRed(), color.getGreen(), color.getBlue()))));
                 meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
             })

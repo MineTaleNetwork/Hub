@@ -3,7 +3,6 @@ package cc.minetale.hub.listener;
 import cc.minetale.commonlib.util.MC;
 import cc.minetale.hub.Hub;
 import cc.minetale.hub.manager.HubManager;
-import cc.minetale.hub.menu.HubSelectorMenu;
 import cc.minetale.hub.menu.ServerSelectorMenu;
 import cc.minetale.hub.sidebar.HubSidebar;
 import cc.minetale.hub.tab.Tab;
@@ -11,10 +10,10 @@ import cc.minetale.hub.util.*;
 import cc.minetale.hub.util.cooldown.Cooldown;
 import cc.minetale.hub.util.cooldown.CooldownManager;
 import cc.minetale.hub.util.cooldown.CooldownType;
-import cc.minetale.mlib.util.ProfileUtil;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.minestom.server.MinecraftServer;
@@ -58,7 +57,7 @@ public class PlayerListener {
                             }
                             case "SHOP":
                             case "PROFILE":
-                                player.sendActionBar(Component.text("This item is currently under development.", MC.CC.RED.getTextColor()));
+                                player.sendActionBar(Component.text("This item is currently under development.", NamedTextColor.RED));
                                 player.playSound(Sound.sound(Key.key("block.note_block.bass"), Sound.Source.MASTER, 1F, 0.5F));
                                 break;
                             case "LOBBY_SELECTOR":
@@ -70,7 +69,7 @@ public class PlayerListener {
                                 Cooldown cooldown = manager.getCooldownByType(player.getUuid(), CooldownType.VISIBILITY);
 
                                 if(cooldown != null && !cooldown.hasExpired()) {
-                                    player.sendActionBar(MC.component("You are on cooldown for another " + cooldown.getSecondsRemaining() + " seconds.", MC.CC.RED));
+                                    player.sendActionBar(Component.text("You are on cooldown for another " + cooldown.getSecondsRemaining() + " seconds.", NamedTextColor.RED));
                                     player.playSound(Sound.sound(Key.key("block.note_block.bass"), Sound.Source.MASTER, 1F, 0.5F));
                                 } else {
                                     manager.putCooldown(player.getUuid(), CooldownType.VISIBILITY);
@@ -81,7 +80,7 @@ public class PlayerListener {
                                     player.getInventory().setItemStack(8, visibility.getItemStack());
                                     player.playSound(Sound.sound(Key.key("ui.button.click"), Sound.Source.MASTER, 1F, 2F));
 
-                                    ProfileUtil.getAssociatedProfile(player).thenAccept(profile -> profile.getOptionsProfile().setVisibilityIndex(index));
+//                                    ProfileUtil.getAssociatedProfile(player).thenAccept(profile -> profile.getOptionsProfile().setVisibilityIndex(index));
                                 }
                                 break;
                         }
@@ -107,7 +106,7 @@ public class PlayerListener {
 //                                        Component.text()
 //                                                .append(
 //                                                        profile.api().getChatFormat(),
-//                                                        Component.text(" has left the lobby.", profile.getGrant().api().getRank().api().getRankColor().getTextColor())
+//                                                        Component.text(" has left the lobby.", profile.getGrant().api().getRank().api().getRankColor())
 //                                                ).build()
 //                                ));
 //                        }
@@ -123,30 +122,30 @@ public class PlayerListener {
                     new HubSidebar(player);
 
                     if(event.isFirstSpawn()) {
-                        player.sendMessage(MC.Style.SEPARATOR_80);
+                        player.sendMessage(MC.SEPARATOR_80);
                         player.sendMessage(Component.empty());
                         player.sendMessage(Component.text()
-                                .append(Component.text("Welcome to the ", MC.CC.GRAY.getTextColor()))
-                                .append(Component.text("MineTale Network", MC.CC.GOLD.getTextColor(), TextDecoration.BOLD)));
+                                .append(Component.text("Welcome to the ", NamedTextColor.GRAY))
+                                .append(Component.text("MineTale Network", NamedTextColor.GOLD, TextDecoration.BOLD)));
                         player.sendMessage(Component.empty());
                         player.sendMessage(Component.text()
-                                .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
-                                .append(Component.text("Website: ", MC.CC.GOLD.getTextColor()))
-                                .append(Component.text("https://minetale.cc", MC.CC.GRAY.getTextColor())));
+                                .append(Component.text("» ", NamedTextColor.DARK_GRAY, TextDecoration.BOLD))
+                                .append(Component.text("Website: ", NamedTextColor.GOLD))
+                                .append(Component.text("https://minetale.cc", NamedTextColor.GRAY)));
                         player.sendMessage(Component.text()
-                                .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
-                                .append(Component.text("Store: ", MC.CC.GOLD.getTextColor()))
-                                .append(Component.text("https://store.minetale.cc", MC.CC.GRAY.getTextColor())));
+                                .append(Component.text("» ", NamedTextColor.DARK_GRAY, TextDecoration.BOLD))
+                                .append(Component.text("Store: ", NamedTextColor.GOLD))
+                                .append(Component.text("https://store.minetale.cc", NamedTextColor.GRAY)));
                         player.sendMessage(Component.text()
-                                .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
-                                .append(Component.text("Discord: ", MC.CC.GOLD.getTextColor()))
-                                .append(Component.text("https://discord.minetale.cc", MC.CC.GRAY.getTextColor())));
+                                .append(Component.text("» ", NamedTextColor.DARK_GRAY, TextDecoration.BOLD))
+                                .append(Component.text("Discord: ", NamedTextColor.GOLD))
+                                .append(Component.text("https://discord.minetale.cc", NamedTextColor.GRAY)));
                         player.sendMessage(Component.text()
-                                .append(Component.text("\u00BB ", MC.CC.DARK_GRAY.getTextColor(), TextDecoration.BOLD))
-                                .append(Component.text("Twitter: ", MC.CC.GOLD.getTextColor()))
-                                .append(Component.text("https://twitter.com/minetalecc", MC.CC.GRAY.getTextColor())));
+                                .append(Component.text("» ", NamedTextColor.DARK_GRAY, TextDecoration.BOLD))
+                                .append(Component.text("Twitter: ", NamedTextColor.GOLD))
+                                .append(Component.text("https://twitter.com/minetalecc", NamedTextColor.GRAY)));
                         player.sendMessage(Component.empty());
-                        player.sendMessage(MC.Style.SEPARATOR_80);
+                        player.sendMessage(MC.SEPARATOR_80);
                     }
 
                     player.setGameMode(GameMode.ADVENTURE);
@@ -163,7 +162,7 @@ public class PlayerListener {
 
                     player.sendPlayerListHeaderAndFooter(Tab.header(), Tab.footer(player));
 
-                    player.showTitle(Title.title(Component.text("Welcome", MC.CC.GOLD.getTextColor()), Component.text("Welcome to MineTale", MC.CC.GRAY.getTextColor()),
+                    player.showTitle(Title.title(Component.text("Welcome", NamedTextColor.GOLD), Component.text("Welcome to MineTale", NamedTextColor.GRAY),
                             Title.Times.of(Duration.ofSeconds(1), Duration.ofSeconds(3), Duration.ofSeconds(1))));
 
                     MinecraftServer.getSchedulerManager().buildTask(() -> {
@@ -178,9 +177,9 @@ public class PlayerListener {
 //
 //                            if (instance != null) {
 //                                instance.sendMessage(MC.Chat.notificationMessage("Lobby",
-//                                        MC.component(
+//                                        Component.text().append(
 //                                                profile.api().getChatFormat(),
-//                                                MC.component(" has joined the lobby.", profile.getGrant().api().getRank().api().getRankColor())
+//                                                Component.text(" has joined the lobby.", profile.getGrant().api().getRank().api().getRankColor())
 //                                        )
 //                                ));
 //                            }

@@ -16,6 +16,7 @@ import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.instance.SharedInstance;
@@ -59,11 +60,11 @@ public class HubSelectorMenu implements FabricProvider {
             boolean connected = instance.getPlayers().contains(player);
 
             items[i] = ClickableItem.of(ItemStack.of(Material.EMERALD)
-                    .withDisplayName(MC.component("Lobby #" + lobbyInstance.getLobbyId(), connected ? MC.CC.RED : MC.CC.GREEN))
+                    .withDisplayName(Component.text("Lobby #" + lobbyInstance.getLobbyId(), connected ? NamedTextColor.RED : NamedTextColor.GREEN))
                     .withLore(Arrays.asList(
-                            MC.component("Players: " + instance.getPlayers().size() + "/150", MC.CC.GRAY),
+                            Component.text("Players: " + instance.getPlayers().size() + "/150", NamedTextColor.GRAY),
                             Component.empty(),
-                            connected ? MC.component("Already connected!", MC.CC.RED) : MC.component("Click to connect!", MC.CC.YELLOW)
+                            connected ? Component.text("Already connected!", NamedTextColor.RED) : Component.text("Click to connect!", NamedTextColor.YELLOW)
                     ))
                     .withMeta(builder -> {
                         if(connected)
@@ -80,7 +81,7 @@ public class HubSelectorMenu implements FabricProvider {
                         Cooldown cooldown = manager.getCooldownByType(player.getUuid(), CooldownType.LOBBY_SWITCH);
 
                         if(cooldown != null && !cooldown.hasExpired()) {
-                            player.sendActionBar(MC.component("You are on cooldown for another " + cooldown.getSecondsRemaining() + " seconds.", MC.CC.RED));
+                            player.sendActionBar(Component.text("You are on cooldown for another " + cooldown.getSecondsRemaining() + " seconds.", NamedTextColor.RED));
                             player.playSound(Sound.sound(Key.key("block.note_block.bass"), Sound.Source.MASTER, 1F, 0.5F));
                         } else {
                             manager.putCooldown(player.getUuid(), CooldownType.LOBBY_SWITCH);

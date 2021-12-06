@@ -42,7 +42,7 @@ public class Hub extends Extension {
     public void initialize() {
         hub = this;
 
-        MinecraftServer.getConnectionManager().setPlayerProvider(HubPlayer::new);
+//        MinecraftServer.getConnectionManager().setPlayerProvider(HubPlayer::new);
 
         this.instanceContainer = MinecraftServer.getInstanceManager().createInstanceContainer();
         this.instanceContainer.setChunkGenerator(new VoidGenerator());
@@ -58,22 +58,16 @@ public class Hub extends Extension {
 
         var positions = new Pos[]{new Pos(0.5, 60, 0.5), new Pos(-0.5, 60, -0.5), new Pos(-0.5, 60, 0.5), new Pos(0.5, 60, -0.5)};
 
-        ChunkUtils.optionalLoadAll(this.instanceContainer, ChunkUtils.getChunksInRange(new Pos(0.0, 0, 0.0), 2), (chunk) -> {}).thenAccept((Void) -> {
-            for(SharedInstance sharedInstance : this.instanceContainer.getSharedInstances()) {
-                WorldBorder border = sharedInstance.getWorldBorder();
-                border.setCenterX(0.0F);
-                border.setCenterZ(0.0F);
-                border.setDiameter(64F);
-            }
+        for(SharedInstance sharedInstance : this.instanceContainer.getSharedInstances()) {
+            WorldBorder border = sharedInstance.getWorldBorder();
+            border.setCenterX(0.0F);
+            border.setCenterZ(0.0F);
+            border.setDiameter(64F);
+        }
 
-            this.instanceContainer.enableAutoChunkLoad(false);
-
-            for(Pos pos : positions) {
-                this.instanceContainer.setBlock(pos, Block.BEDROCK);
-            }
-
-            HubManager.lockAllChunks(this.instanceContainer);
-        });
+        for(Pos pos : positions) {
+            this.instanceContainer.setBlock(pos, Block.BEDROCK);
+        }
 
         MinecraftServer.getSchedulerManager().buildTask(() -> {
             for(HubSidebar hubSidebar : HubSidebar.getSidebars().values()) {
