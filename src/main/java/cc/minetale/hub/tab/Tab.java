@@ -35,7 +35,7 @@ public class Tab {
             return Component.join(JoinConfiguration.separator(Component.newline()), Arrays.asList(
                     Component.empty(),
                     Component.text().append(
-                            Component.text("    " + "NAME HERE", NamedTextColor.GOLD),
+                            Component.text("    " + "Lobby", NamedTextColor.GOLD),
                             Component.text(" (", NamedTextColor.GRAY),
                             Component.text("Ping: " + player.getLatency() + "ms", NamedTextColor.GOLD),
                             Component.text(")", NamedTextColor.GRAY),

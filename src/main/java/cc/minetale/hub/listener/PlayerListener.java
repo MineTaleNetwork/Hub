@@ -27,6 +27,7 @@ import net.minestom.server.event.player.*;
 import net.minestom.server.event.trait.EntityEvent;
 import net.minestom.server.inventory.PlayerInventory;
 import net.minestom.server.item.ItemStack;
+import net.minestom.server.network.packet.server.play.BlockChangePacket;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.time.Tick;
 
@@ -39,7 +40,13 @@ public class PlayerListener {
                 .addListener(InventoryPreClickEvent.class, event -> event.setCancelled(true))
                 .addListener(ItemDropEvent.class, event -> event.setCancelled(true))
                 .addListener(PlayerSwapItemEvent.class, event -> event.setCancelled(true))
-                .addListener(PlayerBlockBreakEvent.class, event -> event.setCancelled(true))
+                .addListener(PlayerBlockBreakEvent.class, event -> {
+                    event.setCancelled(true);
+
+                    var player = event.getPlayer();
+
+                    player.sendPacket(new BlockChangePacket(event.getBlockPosition(), event.getBlock().stateId()));
+                })
                 .addListener(PlayerBlockPlaceEvent.class, event -> event.setCancelled(true))
                 .addListener(PlayerUseItemEvent.class, event -> {
                     var player = event.getPlayer();
@@ -148,7 +155,7 @@ public class PlayerListener {
                         player.sendMessage(MC.SEPARATOR_80);
                     }
 
-                    player.setGameMode(GameMode.ADVENTURE);
+                    player.setGameMode(GameMode.CREATIVE);
 
                     PlayerInventory inventory = player.getInventory();
 

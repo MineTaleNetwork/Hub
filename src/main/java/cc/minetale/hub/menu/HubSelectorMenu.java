@@ -17,6 +17,8 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.instance.SharedInstance;
@@ -60,11 +62,11 @@ public class HubSelectorMenu implements FabricProvider {
             boolean connected = instance.getPlayers().contains(player);
 
             items[i] = ClickableItem.of(ItemStack.of(Material.EMERALD)
-                    .withDisplayName(Component.text("Lobby #" + lobbyInstance.getLobbyId(), connected ? NamedTextColor.RED : NamedTextColor.GREEN))
+                    .withDisplayName(Component.text("Lobby #" + lobbyInstance.getLobbyId(), connected ? Style.style(NamedTextColor.RED, TextDecoration.ITALIC.as(false)) : Style.style(NamedTextColor.GREEN, TextDecoration.ITALIC.as(false))))
                     .withLore(Arrays.asList(
-                            Component.text("Players: " + instance.getPlayers().size() + "/150", NamedTextColor.GRAY),
+                            Component.text("Players: " + instance.getPlayers().size() + "/150", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
                             Component.empty(),
-                            connected ? Component.text("Already connected!", NamedTextColor.RED) : Component.text("Click to connect!", NamedTextColor.YELLOW)
+                            connected ? Component.text("Already connected!", Style.style(NamedTextColor.RED, TextDecoration.ITALIC.as(false))) : Component.text("Click to connect!", Style.style(NamedTextColor.YELLOW, TextDecoration.ITALIC.as(false)))
                     ))
                     .withMeta(builder -> {
                         if(connected)

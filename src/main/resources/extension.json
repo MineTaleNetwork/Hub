@@ -1,6 +1,7 @@
 {
   "entrypoint": "cc.minetale.hub.Hub",
   "name": "Hub",
+  "version": "LATEST",
   "dependencies": [
     "mLib",
     "Flame"

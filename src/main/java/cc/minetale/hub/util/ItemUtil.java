@@ -1,14 +1,19 @@
 package cc.minetale.hub.util;
 
+import cc.minetale.commonlib.util.MC;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minestom.server.color.Color;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.PlayerSkin;
 import net.minestom.server.item.ItemHideFlag;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
+import net.minestom.server.item.firework.FireworkEffect;
+import net.minestom.server.item.firework.FireworkEffectType;
+import net.minestom.server.item.metadata.FireworkEffectMeta;
 import net.minestom.server.item.metadata.PlayerHeadMeta;
 import net.minestom.server.tag.Tag;
 
@@ -19,6 +24,51 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class ItemUtil {
+
+    public static final ItemStack VISIBILITY_ALL = ItemStack.of(Material.FIREWORK_STAR)
+            .withDisplayName(Component.text().append(
+                    Component.text("All Players Visible ", Style.style(NamedTextColor.GREEN, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)),
+                    Component.text("(Right Click)", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))
+            ).build())
+            .withLore(Collections.singletonList(Component.text("Right Click to cycle through visibility!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))))
+            .withMeta(FireworkEffectMeta.class, meta -> {
+                var colors = Collections.singletonList(new Color(NamedTextColor.GREEN));
+
+                meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, colors, colors));
+                meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
+            })
+            .withTag(Tag.String("type"), "VISIBILITY_SELECTOR")
+            .withTag(Tag.Integer("index"), 0);
+
+    public static final ItemStack VISIBILITY_STAFF_AND_FRIENDS = ItemStack.of(Material.FIREWORK_STAR)
+            .withDisplayName(Component.text()
+                    .append(Component.text("Staff and VIPs Visible ", Style.style(NamedTextColor.DARK_PURPLE, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+                    .append(Component.text("(Right Click)", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))))
+                    .build())
+            .withLore(Collections.singletonList(Component.text("Right Click to cycle through visibility!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))))
+            .withMeta(FireworkEffectMeta.class, meta -> {
+                var colors = Collections.singletonList(new Color(NamedTextColor.DARK_PURPLE));
+
+                meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, colors, colors));
+                meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
+            })
+            .withTag(Tag.String("type"), "VISIBILITY_SELECTOR")
+            .withTag(Tag.Integer("index"), 1);
+
+    public static final ItemStack VISIBILITY_NONE = ItemStack.of(Material.FIREWORK_STAR)
+            .withDisplayName(Component.text()
+                    .append(Component.text("No Players Visible ", Style.style(NamedTextColor.RED, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+                    .append(Component.text("(Right Click)", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))))
+                    .build())
+            .withLore(Collections.singletonList(Component.text("Right Click to cycle through visibility!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))))
+            .withMeta(FireworkEffectMeta.class, meta -> {
+                var colors = Collections.singletonList(new Color(NamedTextColor.RED));
+
+                meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, colors, colors));
+                meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
+            })
+            .withTag(Tag.String("type"), "VISIBILITY_SELECTOR")
+            .withTag(Tag.Integer("index"), 2);
 
     public static final ItemStack SERVER_SELECTOR = ItemStack.of(Material.COMPASS)
             .withDisplayName(Component.text().append(
@@ -57,6 +107,7 @@ public class ItemUtil {
             .withLore(List.of(Component.text("Right Click to select a lobby!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))))
             .withTag(Tag.String("type"), "LOBBY_SELECTOR");
 
+    // TODO -> Fix
     public static void VISIBILITY_ITEM(Player player, Consumer<ItemStack> item) {
         item.accept(Visibility.values()[0].getItemStack());
 

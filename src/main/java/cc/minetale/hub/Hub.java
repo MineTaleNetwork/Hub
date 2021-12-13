@@ -42,7 +42,7 @@ public class Hub extends Extension {
     public void initialize() {
         hub = this;
 
-//        MinecraftServer.getConnectionManager().setPlayerProvider(HubPlayer::new);
+        MinecraftServer.getConnectionManager().setPlayerProvider(HubPlayer::new);
 
         this.instanceContainer = MinecraftServer.getInstanceManager().createInstanceContainer();
         this.instanceContainer.setChunkGenerator(new VoidGenerator());
@@ -62,7 +62,7 @@ public class Hub extends Extension {
             WorldBorder border = sharedInstance.getWorldBorder();
             border.setCenterX(0.0F);
             border.setCenterZ(0.0F);
-            border.setDiameter(64F);
+            border.setDiameter(256F);
         }
 
         for(Pos pos : positions) {
