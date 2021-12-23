@@ -1,32 +1,32 @@
 package cc.minetale.hub.menu;
 
 import cc.minetale.hub.util.ItemUtil;
+import cc.minetale.mlib.canvas.CanvasType;
+import cc.minetale.mlib.canvas.FillingType;
+import cc.minetale.mlib.canvas.Fragment;
+import cc.minetale.mlib.canvas.Menu;
 import net.kyori.adventure.text.Component;
-import net.minestom.server.inventory.Inventory;
-import net.minestom.server.inventory.InventoryType;
-import net.minestom.server.item.ItemStack;
-import net.minestom.server.item.Material;
+import net.minestom.server.entity.Player;
 
-public class ServerSelectorMenu extends Inventory {
+public class ServerSelectorMenu extends Menu {
 
-    public ServerSelectorMenu() {
-        super(InventoryType.CHEST_5_ROW, "Server Selector");
+    public ServerSelectorMenu(Player player) {
+        super(player, Component.text("Server Selector"), CanvasType.FIVE_ROW);
 
-        this.addInventoryCondition((player, slot, clickType, result) -> {
-            result.setCancel(true);
-        });
+        setFiller(FillingType.EMPTY_SLOTS);
 
-        for(int i = 0; i < this.getSize(); i++) {
-            this.setItemStack(i, ItemStack.of(Material.GRAY_STAINED_GLASS_PANE).withDisplayName(Component.empty()));
-        }
+        setFragment(10, Fragment.empty(ItemUtil.getPracticeItem()));
+        setFragment(12, Fragment.empty(ItemUtil.getParkourItem()));
+        setFragment(14, Fragment.empty(ItemUtil.getWoolWarsItem()));
+        setFragment(16, Fragment.empty(ItemUtil.getBedWarsItem()));
+        setFragment(28, Fragment.empty(ItemUtil.getHousingItem()));
+        setFragment(30, Fragment.empty(ItemUtil.getArcadeGamesItem()));
+        setFragment(32, Fragment.empty(ItemUtil.getSkyBlockItem()));
+        setFragment(34, Fragment.empty(ItemUtil.getSkyWarsItem()));
 
-        this.setItemStack(10, ItemUtil.getPracticeItem());
-        this.setItemStack(12, ItemUtil.getParkourItem());
-        this.setItemStack(14, ItemUtil.getWoolWarsItem());
-        this.setItemStack(16, ItemUtil.getBedWarsItem());
-        this.setItemStack(28, ItemUtil.getHousingItem());
-        this.setItemStack(30, ItemUtil.getArcadeGamesItem());
-        this.setItemStack(32, ItemUtil.getSkyBlockItem());
-        this.setItemStack(34, ItemUtil.getSkyWarsItem());
+        openMenu();
     }
+
+    @Override
+    public void close() {}
 }

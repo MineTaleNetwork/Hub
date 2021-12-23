@@ -1,5 +1,6 @@
 package cc.minetale.hub.tab;
 
+import cc.minetale.hub.util.LobbyInstance;
 import cc.minetale.mlib.mLib;
 import cc.minetale.commonlib.util.MC;
 import net.kyori.adventure.text.Component;
@@ -12,8 +13,6 @@ import net.minestom.server.instance.Instance;
 import java.util.Arrays;
 
 public class Tab {
-
-    // TODO: Make this an interface
 
     public static Component header() {
         return Component.join(JoinConfiguration.separator(Component.newline()), Arrays.asList(
@@ -35,7 +34,7 @@ public class Tab {
             return Component.join(JoinConfiguration.separator(Component.newline()), Arrays.asList(
                     Component.empty(),
                     Component.text().append(
-                            Component.text("    " + "Lobby", NamedTextColor.GOLD),
+                            Component.text("    Lobby-" + LobbyInstance.getHubMap().get(instance.getUniqueId()).getLobbyId(), NamedTextColor.GOLD),
                             Component.text(" (", NamedTextColor.GRAY),
                             Component.text("Ping: " + player.getLatency() + "ms", NamedTextColor.GOLD),
                             Component.text(")", NamedTextColor.GRAY),

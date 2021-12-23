@@ -36,13 +36,11 @@ public class ItemUtil {
 
                 meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, colors, colors));
                 meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
-            })
-            .withTag(Tag.String("type"), "VISIBILITY_SELECTOR")
-            .withTag(Tag.Integer("index"), 0);
+            });
 
     public static final ItemStack VISIBILITY_STAFF_AND_FRIENDS = ItemStack.of(Material.FIREWORK_STAR)
             .withDisplayName(Component.text()
-                    .append(Component.text("Staff and VIPs Visible ", Style.style(NamedTextColor.DARK_PURPLE, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+                    .append(Component.text("Staff and Friends Visible ", Style.style(NamedTextColor.DARK_PURPLE, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
                     .append(Component.text("(Right Click)", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))))
                     .build())
             .withLore(Collections.singletonList(Component.text("Right Click to cycle through visibility!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))))
@@ -51,9 +49,7 @@ public class ItemUtil {
 
                 meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, colors, colors));
                 meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
-            })
-            .withTag(Tag.String("type"), "VISIBILITY_SELECTOR")
-            .withTag(Tag.Integer("index"), 1);
+            });
 
     public static final ItemStack VISIBILITY_NONE = ItemStack.of(Material.FIREWORK_STAR)
             .withDisplayName(Component.text()
@@ -66,25 +62,21 @@ public class ItemUtil {
 
                 meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, colors, colors));
                 meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
-            })
-            .withTag(Tag.String("type"), "VISIBILITY_SELECTOR")
-            .withTag(Tag.Integer("index"), 2);
+            });
 
     public static final ItemStack SERVER_SELECTOR = ItemStack.of(Material.COMPASS)
             .withDisplayName(Component.text().append(
                     Component.text("Server Selector ", Style.style(NamedTextColor.BLUE, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)),
                     Component.text("(Right Click)", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))
             ).build())
-            .withLore(Collections.singletonList(Component.text("Right Click to select a server!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))))
-            .withTag(Tag.String("type"), "SERVER_SELECTOR");
+            .withLore(Collections.singletonList(Component.text("Right Click to select a server!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))));
 
     public static final ItemStack SHOP = ItemStack.of(Material.EMERALD)
             .withDisplayName(Component.text().append(
                     Component.text("Shop ", Style.style(NamedTextColor.GREEN, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)),
                     Component.text("(Right Click)", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))
             ).build())
-            .withLore(List.of(Component.text("Right Click to open the shop!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))))
-            .withTag(Tag.String("type"), "SHOP");
+            .withLore(List.of(Component.text("Right Click to open the shop!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))));
 
     public static ItemStack PROFILE(Player player) {
         UUID uuid = player.getUuid();
@@ -95,8 +87,7 @@ public class ItemUtil {
                         Component.text("(Right Click)", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))
                 ).build())
                 .withLore(List.of(Component.text("Right Click to open your profile!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))))
-                .withMeta(PlayerHeadMeta.class, meta -> meta.skullOwner(uuid).playerSkin(PlayerSkin.fromUuid(uuid.toString())))
-                .withTag(Tag.String("type"), "PROFILE");
+                .withMeta(PlayerHeadMeta.class, meta -> meta.skullOwner(uuid).playerSkin(PlayerSkin.fromUuid(uuid.toString())));
     }
 
     public static ItemStack LOBBY_SELECTOR = ItemStack.of(Material.NETHER_STAR)
@@ -104,8 +95,7 @@ public class ItemUtil {
                     Component.text("Lobby Selector ", Style.style(NamedTextColor.AQUA, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)),
                     Component.text("(Right Click)", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))
             ).build())
-            .withLore(List.of(Component.text("Right Click to select a lobby!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))))
-            .withTag(Tag.String("type"), "LOBBY_SELECTOR");
+            .withLore(List.of(Component.text("Right Click to select a lobby!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))));
 
     // TODO -> Fix
     public static void VISIBILITY_ITEM(Player player, Consumer<ItemStack> item) {
