@@ -1,6 +1,5 @@
 package cc.minetale.hub.util;
 
-import cc.minetale.commonlib.util.MC;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -15,7 +14,6 @@ import net.minestom.server.item.firework.FireworkEffect;
 import net.minestom.server.item.firework.FireworkEffectType;
 import net.minestom.server.item.metadata.FireworkEffectMeta;
 import net.minestom.server.item.metadata.PlayerHeadMeta;
-import net.minestom.server.tag.Tag;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -86,8 +84,8 @@ public class ItemUtil {
                         Component.text("Profile ", Style.style(NamedTextColor.LIGHT_PURPLE, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)),
                         Component.text("(Right Click)", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))
                 ).build())
-                .withLore(List.of(Component.text("Right Click to open your profile!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))))
-                .withMeta(PlayerHeadMeta.class, meta -> meta.skullOwner(uuid).playerSkin(PlayerSkin.fromUuid(uuid.toString())));
+                .withLore(List.of(Component.text("Right Click to open your profile!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))));
+//                .withMeta(PlayerHeadMeta.class, meta -> meta.skullOwner(uuid).playerSkin(PlayerSkin.fromUuid(uuid.toString())));
     }
 
     public static ItemStack LOBBY_SELECTOR = ItemStack.of(Material.NETHER_STAR)

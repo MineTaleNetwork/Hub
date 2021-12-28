@@ -33,7 +33,7 @@ import java.time.Duration;
 public class PlayerListener {
 
     public static EventNode<PlayerEvent> events() {
-        return EventNode.type("player-events", EventFilter.PLAYER)
+        return EventNode.type("hub", EventFilter.PLAYER)
                 .addListener(PlayerBlockInteractEvent.class, event -> event.setCancelled(true))
                 .addListener(InventoryPreClickEvent.class, event -> event.setCancelled(true))
                 .addListener(ItemDropEvent.class, event -> event.setCancelled(true))
@@ -85,23 +85,15 @@ public class PlayerListener {
                     }
                 })
                 .addListener(PlayerLoginEvent.class, event -> {
-                    var player = event.getPlayer();
-
-                    event.setSpawningInstance(HubManager.getRandomInstance().getInstance());
-                    player.setRespawnPoint(Hub.getHub().getSpawn());
+                    event.setSpawningInstance(HubManager.getRandomInstance());
                 })
                 .addListener(PlayerDisconnectEvent.class, event -> {
-                    var sidebars = HubSidebar.getSidebars();
-                    var sidebar = sidebars.get(event.getPlayer().getUuid());
-
-                    if(sidebar != null) {
-                        sidebar.remove();
-                    }
+                    HubSidebar.remove(event.getPlayer());
                 })
                 .addListener(PlayerSpawnEvent.class, event -> {
                     var player = event.getPlayer();
 
-                    new HubSidebar(player);
+                    HubSidebar.createSidebar(player);
 
                     if(event.isFirstSpawn()) {
                         player.sendMessage(MC.SEPARATOR_80);
@@ -144,8 +136,11 @@ public class PlayerListener {
                         player.setAllowFlying(true);
                     }
 
-                    player.showTitle(Title.title(Component.text("Welcome", NamedTextColor.GOLD), Component.text("Welcome to MineTale", NamedTextColor.GRAY),
-                            Title.Times.of(Duration.ofSeconds(1), Duration.ofSeconds(3), Duration.ofSeconds(1))));
+                    player.showTitle(Title.title(
+                            Component.text("Welcome", NamedTextColor.GOLD),
+                            Component.text("Welcome to MineTale", NamedTextColor.GRAY),
+                            Title.Times.of(Duration.ofSeconds(1), Duration.ofSeconds(3), Duration.ofSeconds(1))
+                    ));
 
                     player.playSound(Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 1F, 2F));
                 });

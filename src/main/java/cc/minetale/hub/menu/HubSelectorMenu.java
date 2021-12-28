@@ -1,7 +1,7 @@
 package cc.minetale.hub.menu;
 
 import cc.minetale.hub.Hub;
-import cc.minetale.hub.util.LobbyInstance;
+import cc.minetale.hub.manager.HubManager;
 import cc.minetale.mlib.canvas.*;
 import cc.minetale.mlib.util.MenuUtil;
 import cc.minetale.mlib.util.SoundsUtil;
@@ -12,7 +12,10 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.entity.Player;
 import net.minestom.server.inventory.click.ClickType;
-import net.minestom.server.item.*;
+import net.minestom.server.item.Enchantment;
+import net.minestom.server.item.ItemHideFlag;
+import net.minestom.server.item.ItemStack;
+import net.minestom.server.item.Material;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,8 +29,8 @@ public class HubSelectorMenu extends Menu {
 
         setFiller(FillingType.BORDER);
 
-        var instances = new ArrayList<>(LobbyInstance.getHubMap().values());
-        instances.sort(Comparator.comparing(LobbyInstance::getLobbyId));
+        var instances = new ArrayList<>(Hub.getInstance().getContainer().getSharedInstances());
+        instances.sort(Comparator.comparing(instance -> HubManager.getLobbyId(instance.getUniqueId())));
 
         setFragment(48, MenuUtil.PREVIOUS_PAGE(this));
         setFragment(50, MenuUtil.NEXT_PAGE(this));
@@ -37,12 +40,11 @@ public class HubSelectorMenu extends Menu {
 
         int i = 0;
 
-        for (var lobbyInstance : instances) {
-            var instance = lobbyInstance.getInstance();
+        for (var instance : instances) {
             boolean connected = instance.getPlayers().contains(player);
 
-            fragments[i] = Fragment.of(ItemStack.of(Material.EMERALD, ensureRange(i))
-                    .withDisplayName(Component.text("Lobby #" + lobbyInstance.getLobbyId(), connected ?
+            fragments[i] = Fragment.of(ItemStack.of(Material.EMERALD, ensureRange(i + 1))
+                    .withDisplayName(Component.text("Lobby #" + HubManager.getLobbyId(instance.getUniqueId()), connected ?
                             Style.style(NamedTextColor.RED, TextDecoration.ITALIC.as(false)) :
                             Style.style(NamedTextColor.GREEN, TextDecoration.ITALIC.as(false))))
                     .withLore(Arrays.asList(
@@ -61,15 +63,15 @@ public class HubSelectorMenu extends Menu {
                                     .hideFlag(ItemHideFlag.HIDE_ENCHANTS);
 
                         return builder;
-                    }), e -> {
+                    }), event -> {
 
-                if(e.getClickType() == ClickType.LEFT_CLICK) {
+                if(event.getClickType() == ClickType.LEFT_CLICK) {
                     if(instance == player.getInstance()) {
                         SoundsUtil.playErrorSound(player);
                     } else {
                         this.handleClose(player);
                         player.closeInventory();
-                        player.teleport(Hub.getHub().getSpawn());
+                        player.teleport(Hub.SPAWN);
                         player.setInstance(instance);
                     }
                 }

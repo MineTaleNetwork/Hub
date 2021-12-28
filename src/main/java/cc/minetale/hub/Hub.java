@@ -18,26 +18,22 @@ import java.time.temporal.ChronoUnit;
 @Getter
 public class Hub extends Extension {
 
-    @Getter private static Hub hub;
-    private InstanceContainer instanceContainer;
-    private Pos spawn;
+    @Getter private static Hub instance;
+    private InstanceContainer container;
+
+    public static Pos SPAWN = new Pos(0.5, 72, 0.5);
 
     @Override
     public void initialize() {
-        hub = this;
+        instance = this;
 
         MinecraftServer.getConnectionManager().setPlayerProvider(HubPlayer::new);
 
-        this.instanceContainer = MinecraftServer.getInstanceManager().createInstanceContainer(new AnvilLoader("hub")); // new AnvilLoader("hub")
-//        this.instanceContainer.setChunkGenerator(new VoidGenerator());
-
-        this.spawn = new Pos(0.5, 72, 0.5);
+        this.container = MinecraftServer.getInstanceManager().createInstanceContainer(new AnvilLoader("hub"));
 
         HubManager.createHubs(50);
 
-        // TODO Prevent player from moving past world border
-
-        for(var instance : this.instanceContainer.getSharedInstances()) {
+        for(var instance : this.container.getSharedInstances()) {
             var border = instance.getWorldBorder();
             border.setCenterX(0.0F);
             border.setCenterZ(0.0F);
@@ -48,12 +44,7 @@ public class Hub extends Extension {
 
         MinecraftServer.getSchedulerManager().buildTask(() -> {
             for(var player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
-                var sidebar = HubSidebar.getSidebars().get(player.getUuid());
-
-                if(sidebar != null) {
-                    sidebar.update();
-                }
-
+                HubSidebar.update(player);
                 player.sendPlayerListHeaderAndFooter(Tab.header(), Tab.footer(player));
             }
         }).repeat(Duration.of(5, ChronoUnit.SECONDS)).schedule();

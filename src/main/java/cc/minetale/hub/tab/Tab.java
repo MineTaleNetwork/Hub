@@ -1,14 +1,12 @@
 package cc.minetale.hub.tab;
 
-import cc.minetale.hub.util.LobbyInstance;
-import cc.minetale.mlib.mLib;
-import cc.minetale.commonlib.util.MC;
+import cc.minetale.hub.Hub;
+import cc.minetale.hub.manager.HubManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.entity.Player;
-import net.minestom.server.instance.Instance;
 
 import java.util.Arrays;
 
@@ -28,13 +26,14 @@ public class Tab {
     }
 
     public static Component footer(Player player) {
-        Instance instance = player.getInstance();
+        var instance = player.getInstance();
+        var container = Hub.getInstance().getContainer();
 
         if(instance != null) {
             return Component.join(JoinConfiguration.separator(Component.newline()), Arrays.asList(
                     Component.empty(),
                     Component.text().append(
-                            Component.text("    Lobby-" + LobbyInstance.getHubMap().get(instance.getUniqueId()).getLobbyId(), NamedTextColor.GOLD),
+                            Component.text("    Lobby-" + HubManager.getLobbyId(instance.getUniqueId()), NamedTextColor.GOLD),
                             Component.text(" (", NamedTextColor.GRAY),
                             Component.text("Ping: " + player.getLatency() + "ms", NamedTextColor.GOLD),
                             Component.text(")", NamedTextColor.GRAY),

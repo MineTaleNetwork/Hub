@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minestom.server.entity.Player;
 import net.minestom.server.network.player.PlayerConnection;
-import net.minestom.server.utils.time.Tick;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +20,7 @@ public class HubPlayer extends FlamePlayer {
     public HubPlayer(@NotNull UUID uuid, @NotNull String username, @NotNull PlayerConnection playerConnection) {
         super(uuid, username, playerConnection);
 
+        this.setRespawnPoint(Hub.SPAWN);
         this.visibilityCooldown = new Cooldown(Duration.of(40, TimeUnit.SERVER_TICK));
     }
 
@@ -29,7 +29,7 @@ public class HubPlayer extends FlamePlayer {
         var instance = this.getInstance();
 
         if (instance != null && instance.isInVoid(this.position)) {
-            this.teleport(Hub.getHub().getSpawn());
+            this.teleport(Hub.SPAWN);
         }
     }
 
