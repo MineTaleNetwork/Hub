@@ -1,7 +1,6 @@
 package cc.minetale.hub.tab;
 
 import cc.minetale.hub.Hub;
-import cc.minetale.hub.manager.HubManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -33,7 +32,7 @@ public class Tab {
             return Component.join(JoinConfiguration.separator(Component.newline()), Arrays.asList(
                     Component.empty(),
                     Component.text().append(
-                            Component.text("    Lobby-" + HubManager.getLobbyId(instance.getUniqueId()), NamedTextColor.GOLD),
+                            Component.text("    Lobby-Unknown", NamedTextColor.GOLD),
                             Component.text(" (", NamedTextColor.GRAY),
                             Component.text("Ping: " + player.getLatency() + "ms", NamedTextColor.GOLD),
                             Component.text(")", NamedTextColor.GRAY),

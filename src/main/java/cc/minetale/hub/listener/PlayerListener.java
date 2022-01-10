@@ -2,8 +2,6 @@ package cc.minetale.hub.listener;
 
 import cc.minetale.commonlib.util.MC;
 import cc.minetale.hub.Hub;
-import cc.minetale.hub.manager.HubManager;
-import cc.minetale.hub.menu.HubSelectorMenu;
 import cc.minetale.hub.menu.ServerSelectorMenu;
 import cc.minetale.hub.sidebar.HubSidebar;
 import cc.minetale.hub.tab.Tab;
@@ -50,11 +48,9 @@ public class PlayerListener {
 
                         if(material == Material.COMPASS) {
                             new ServerSelectorMenu(player);
-                        } else if(material == Material.EMERALD || material == Material.PLAYER_HEAD) {
+                        } else if(material == Material.EMERALD || material == Material.PLAYER_HEAD || material == Material.NETHER_STAR) {
                             player.sendActionBar(Component.text("This item is currently under development.", NamedTextColor.RED));
                             SoundsUtil.playErrorSound(player);
-                        } else if(material == Material.NETHER_STAR) {
-                            new HubSelectorMenu(player);
                         } else if(material == Material.FIREWORK_STAR) {
                             var cooldown = HubPlayer.fromPlayer(player).getVisibilityCooldown();
                             if (cooldown.isReady()) {
@@ -85,7 +81,7 @@ public class PlayerListener {
                     }
                 })
                 .addListener(PlayerLoginEvent.class, event -> {
-                    event.setSpawningInstance(HubManager.getRandomInstance());
+                    event.setSpawningInstance(Hub.getInstance().getContainer());
                 })
                 .addListener(PlayerDisconnectEvent.class, event -> {
                     HubSidebar.remove(event.getPlayer());
