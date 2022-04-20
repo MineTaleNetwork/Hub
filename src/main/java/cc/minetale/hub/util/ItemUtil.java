@@ -1,5 +1,7 @@
 package cc.minetale.hub.util;
 
+import cc.minetale.sodium.util.Colors;
+import cc.minetale.sodium.util.Message;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -36,9 +38,9 @@ public class ItemUtil {
                 meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
             });
 
-    public static final ItemStack VISIBILITY_STAFF_AND_FRIENDS = ItemStack.of(Material.FIREWORK_STAR)
+    public static final ItemStack VISIBILITY_VIP = ItemStack.of(Material.FIREWORK_STAR)
             .withDisplayName(Component.text()
-                    .append(Component.text("Staff and Friends Visible ", Style.style(NamedTextColor.DARK_PURPLE, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+                    .append(Component.text("VIPs Visible ", Style.style(NamedTextColor.DARK_PURPLE, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
                     .append(Component.text("(Right Click)", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))))
                     .build())
             .withLore(Collections.singletonList(Component.text("Right Click to cycle through visibility!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))))
@@ -51,12 +53,12 @@ public class ItemUtil {
 
     public static final ItemStack VISIBILITY_NONE = ItemStack.of(Material.FIREWORK_STAR)
             .withDisplayName(Component.text()
-                    .append(Component.text("No Players Visible ", Style.style(NamedTextColor.RED, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+                    .append(Component.text("No Players Visible ", Style.style(Colors.RED, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
                     .append(Component.text("(Right Click)", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))))
                     .build())
             .withLore(Collections.singletonList(Component.text("Right Click to cycle through visibility!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))))
             .withMeta(FireworkEffectMeta.class, meta -> {
-                var colors = Collections.singletonList(new Color(NamedTextColor.RED));
+                var colors = Collections.singletonList(new Color(Colors.RED));
 
                 meta.effect(new FireworkEffect(false ,false, FireworkEffectType.SMALL_BALL, colors, colors));
                 meta.hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS);
@@ -88,6 +90,13 @@ public class ItemUtil {
                 .withMeta(PlayerHeadMeta.class, meta -> meta.skullOwner(uuid).playerSkin(PlayerSkin.fromUuid(uuid.toString())));
     }
 
+    public static final ItemStack COSMETIC_SELECTOR = ItemStack.of(Material.BEACON)
+            .withDisplayName(Component.text().append(
+                    Component.text("Cosmetic Selector ", Style.style(NamedTextColor.YELLOW, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)),
+                    Component.text("(Right Click)", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))
+            ).build())
+            .withLore(Collections.singletonList(Component.text("Right Click to select a cosmetic!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))));
+
     public static ItemStack LOBBY_SELECTOR = ItemStack.of(Material.NETHER_STAR)
             .withDisplayName(Component.text().append(
                     Component.text("Lobby Selector ", Style.style(NamedTextColor.AQUA, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)),
@@ -95,137 +104,180 @@ public class ItemUtil {
             ).build())
             .withLore(List.of(Component.text("Right Click to select a lobby!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))));
 
-    // TODO -> Fix
-    public static void VISIBILITY_ITEM(Player player, Consumer<ItemStack> item) {
-        item.accept(Visibility.values()[0].getItemStack());
+    public static ItemStack VISIBILITY_ITEM(Player player) {
+        var profile = HubPlayer.fromPlayer(player).getProfile();
 
-//        ProfileUtil.getAssociatedProfile(player).thenAccept(profile -> {
-//            item.accept(Visibility.values()[profile.getOptionsProfile().getVisibilityIndex()].getItemStack());
-//        });
+        return switch (profile.getHubProfile().getVisibility()) {
+            case ALL -> VISIBILITY_ALL;
+            case VIP -> VISIBILITY_VIP;
+            case NONE -> VISIBILITY_NONE;
+        };
     }
 
-    public static ItemStack getParkourItem() {
-        return ItemStack.of(Material.GOLDEN_BOOTS)
-                .withDisplayName(Component.text("PARKOUR", Style.style(NamedTextColor.GOLD, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+    public static ItemStack getSurvivalItem() {
+        return ItemStack.of(Material.GRASS_BLOCK)
+                .withDisplayName(Component.text("Survival", Style.style(Colors.BLUE, TextDecoration.ITALIC.withState(false), TextDecoration.BOLD)))
                 .withLore(Arrays.asList(
-                        Component.text("Fun, Casual, Competitive", Style.style(NamedTextColor.DARK_GRAY, TextDecoration.ITALIC.as(false))),
+                        Message.menuSeparator(),
+                        Component.text("Play classic survival", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("with your friends!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
                         Component.empty(),
-                        Component.text("Parkour is where you maneuver", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("through various obstacles without", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("falling or failing!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.empty(),
-                        Component.text("▶ Click to Connect", Style.style(NamedTextColor.GOLD, TextDecoration.ITALIC.as(false))),
-                        Component.text().append(
-                                Component.text("0 ", Style.style(NamedTextColor.GOLD, TextDecoration.ITALIC.as(false))),
-                                Component.text("Players are Online!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))
-                        ).build()
+                        Component.text("Coming Soon", Style.style(Colors.RED, TextDecoration.ITALIC.withState(false))),
+                        Message.menuSeparator()
                 ))
                 .withMeta(meta -> meta.hideFlag(ItemHideFlag.HIDE_ATTRIBUTES));
     }
 
     public static ItemStack getPracticeItem() {
         return ItemStack.of(Material.IRON_SWORD)
-                .withDisplayName(Component.text("PRACTICE", Style.style(NamedTextColor.DARK_AQUA, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+                .withDisplayName(Component.text("Practice", Style.style(Colors.BLUE, TextDecoration.ITALIC.withState(false), TextDecoration.BOLD)))
                 .withLore(Arrays.asList(
-                        Component.text("PvP, Competitive, Fun", Style.style(NamedTextColor.DARK_GRAY, TextDecoration.ITALIC.as(false))),
+                        Message.menuSeparator(),
+                        Component.text("Practice your pvp skills and", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("become the best of the best!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
                         Component.empty(),
-                        Component.text("Practice your pvp skills and", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("become the best of the best!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.empty(),
-                        Component.text("▶ Click to Connect", Style.style(NamedTextColor.DARK_AQUA, TextDecoration.ITALIC.as(false))),
-                        Component.text().append(
-                                Component.text("0 ", Style.style(NamedTextColor.DARK_AQUA, TextDecoration.ITALIC.as(false))),
-                                Component.text("Players are Online!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))
-                        ).build()
+                        Component.text("Coming Soon", Style.style(Colors.RED, TextDecoration.ITALIC.withState(false))),
+                        Message.menuSeparator()
                 ))
                 .withMeta(meta -> meta.hideFlag(ItemHideFlag.HIDE_ATTRIBUTES));
     }
-    public static ItemStack getSkyBlockItem() {
-        return ItemStack.of(Material.OAK_SAPLING)
-                .withDisplayName(Component.text("SKYBLOCK", Style.style(NamedTextColor.AQUA, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+
+    public static ItemStack getParkourItem() {
+        return ItemStack.of(Material.GOLDEN_BOOTS)
+                .withDisplayName(Component.text("Parkour", Style.style(Colors.BLUE, TextDecoration.ITALIC.withState(false), TextDecoration.BOLD)))
                 .withLore(Arrays.asList(
-                        Component.text("Survival, Challenge, Island", Style.style(NamedTextColor.DARK_GRAY, TextDecoration.ITALIC.as(false))),
+                        Message.menuSeparator(),
+                        Component.text("Maneuver through various obstacle", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("courses without falling or failing!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
                         Component.empty(),
-                        Component.text("Spawn on a floating island with", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("very limited resources, expand", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("and grow your island!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.empty(),
-                        Component.text("Coming Soon", Style.style(NamedTextColor.RED, TextDecoration.ITALIC.as(false)))
-                ));
+                        Component.text("Coming Soon", Style.style(Colors.RED, TextDecoration.ITALIC.withState(false))),
+                        Message.menuSeparator()
+                ))
+                .withMeta(meta -> meta.hideFlag(ItemHideFlag.HIDE_ATTRIBUTES));
     }
 
     public static ItemStack getSkyWarsItem() {
         return ItemStack.of(Material.ENDER_EYE)
-                .withDisplayName(Component.text("SKYWARS", Style.style(NamedTextColor.GREEN, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+                .withDisplayName(Component.text("Sky Wars", Style.style(Colors.BLUE, TextDecoration.ITALIC.withState(false), TextDecoration.BOLD)))
                 .withLore(Arrays.asList(
-                        Component.text("Competitive, Challenge, Island", Style.style(NamedTextColor.DARK_GRAY, TextDecoration.ITALIC.as(false))),
+                        Message.menuSeparator(),
+                        Component.text("Fight against other players in", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("the sky, last player remaining wins!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
                         Component.empty(),
-                        Component.text("Spawn on a floating island and", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("fight against other players,", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("last player remaining wins!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.empty(),
-                        Component.text("Coming Soon", Style.style(NamedTextColor.RED, TextDecoration.ITALIC.as(false)))
+                        Component.text("Coming Soon", Style.style(Colors.RED, TextDecoration.ITALIC.withState(false))),
+                        Message.menuSeparator()
                 ));
     }
 
     public static ItemStack getWoolWarsItem() {
-        return ItemStack.of(Material.YELLOW_WOOL)
-                .withDisplayName(Component.text("WOOLWARS", Style.style(NamedTextColor.YELLOW, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+        return ItemStack.of(Material.WHITE_WOOL)
+                .withDisplayName(Component.text("Wool Wars", Style.style(Colors.BLUE, TextDecoration.ITALIC.withState(false), TextDecoration.BOLD)))
                 .withLore(Arrays.asList(
-                        Component.text("Competitive, Fast, Arena", Style.style(NamedTextColor.DARK_GRAY, TextDecoration.ITALIC.as(false))),
+                        Message.menuSeparator(),
+                        Component.text("Quickly make your way to the", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("top without touching the floor,", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("and knock players off in the process!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
                         Component.empty(),
-                        Component.text("Quickly make your way to the", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("top without touching the floor,", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("and knock players in the process!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.empty(),
-                        Component.text("▶ Click to Connect", Style.style(NamedTextColor.YELLOW, TextDecoration.ITALIC.as(false))),
-                        Component.text().append(
-                                Component.text("0 ", Style.style(NamedTextColor.YELLOW, TextDecoration.ITALIC.as(false))),
-                                Component.text("Players are Online!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false)))
-                        ).build()
+                        Component.text("Coming Soon", Style.style(Colors.RED, TextDecoration.ITALIC.withState(false))),
+                        Message.menuSeparator()
                 ));
     }
 
     public static ItemStack getBedWarsItem() {
         return ItemStack.of(Material.RED_BED)
-                .withDisplayName(Component.text("BEDWARS", Style.style(NamedTextColor.RED, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+                .withDisplayName(Component.text("Bed Wars", Style.style(Colors.BLUE, TextDecoration.ITALIC.withState(false), TextDecoration.BOLD)))
                 .withLore(Arrays.asList(
-                        Component.text("Competitive, Slow, Island", Style.style(NamedTextColor.DARK_GRAY, TextDecoration.ITALIC.as(false))),
+                        Message.menuSeparator(),
+                        Component.text("Protect your bed and seek out", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("enemy players beds, and destroy", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("them to become victorious!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
                         Component.empty(),
-                        Component.text("Protect your bed and seek out", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("enemy players beds, and destroy", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("them to become victorious!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.empty(),
-                        Component.text("Coming Soon", Style.style(NamedTextColor.RED, TextDecoration.ITALIC.as(false)))
+                        Component.text("Coming Soon", Style.style(Colors.RED, TextDecoration.ITALIC.withState(false))),
+                        Message.menuSeparator()
                 ));
     }
 
     public static ItemStack getHousingItem() {
         return ItemStack.of(Material.OAK_DOOR)
-                .withDisplayName(Component.text("HOUSING", Style.style(NamedTextColor.BLUE, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+                .withDisplayName(Component.text("Housing", Style.style(Colors.BLUE, TextDecoration.ITALIC.withState(false), TextDecoration.BOLD)))
                 .withLore(Arrays.asList(
-                        Component.text("Creative, Building, Share", Style.style(NamedTextColor.DARK_GRAY, TextDecoration.ITALIC.as(false))),
+                        Message.menuSeparator(),
+                        Component.text("Customize and build on your own", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("personal plot, hang out with your", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("friends, visit other peoples", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("houses, socialize, and more!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
                         Component.empty(),
-                        Component.text("Customize and build on your own", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("personal plot, hang out with your", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("friends, visit other people's", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("houses, socialize, and more!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.empty(),
-                        Component.text("Coming Soon", Style.style(NamedTextColor.RED, TextDecoration.ITALIC.as(false)))
+                        Component.text("Coming Soon", Style.style(Colors.RED, TextDecoration.ITALIC.withState(false))),
+                        Message.menuSeparator()
                 ));
     }
 
     public static ItemStack getArcadeGamesItem() {
         return ItemStack.of(Material.NOTE_BLOCK)
-                .withDisplayName(Component.text("ARCADE GAMES", Style.style(NamedTextColor.LIGHT_PURPLE, TextDecoration.ITALIC.as(false), TextDecoration.BOLD)))
+                .withDisplayName(Component.text("Arcade", Style.style(Colors.BLUE, TextDecoration.ITALIC.withState(false), TextDecoration.BOLD)))
                 .withLore(Arrays.asList(
-                        Component.text("Arcade, Games, Fun", Style.style(NamedTextColor.DARK_GRAY, TextDecoration.ITALIC.as(false))),
+                        Message.menuSeparator(),
+                        Component.text("Switch between multiple different", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("gamemodes and play all of our", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("different arcade games!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
                         Component.empty(),
-                        Component.text("Switch between multiple different", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("gamemodes and play all of our", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
-                        Component.text("different arcade games!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.as(false))),
+                        Component.text("Coming Soon", Style.style(Colors.RED, TextDecoration.ITALIC.withState(false))),
+                        Message.menuSeparator()
+                ));
+    }
+
+    public static ItemStack getBlockSumoItem() {
+        return ItemStack.of(Material.SLIME_BALL)
+                .withDisplayName(Component.text("Block Sumo", Style.style(Colors.BLUE, TextDecoration.ITALIC.withState(false), TextDecoration.BOLD)))
+                .withLore(Arrays.asList(
+                        Message.menuSeparator(),
+                        Component.text("Sumo your way to the center", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("and capture the zone for 20", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("seconds to become victorious!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
                         Component.empty(),
-                        Component.text("Coming Soon", Style.style(NamedTextColor.RED, TextDecoration.ITALIC.as(false)))
+                        Component.text("Coming Soon", Style.style(Colors.RED, TextDecoration.ITALIC.withState(false))),
+                        Message.menuSeparator()
+                ));
+    }
+
+    public static ItemStack getNaturalDisastersItem() {
+        return ItemStack.of(Material.BLAZE_POWDER)
+                .withDisplayName(Component.text("Natural Disasters", Style.style(Colors.BLUE, TextDecoration.ITALIC.withState(false), TextDecoration.BOLD)))
+                .withLore(Arrays.asList(
+                        Message.menuSeparator(),
+                        Component.text("Survive through waves of", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("natural disasters and be", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("the last man standing!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.empty(),
+                        Component.text("Coming Soon", Style.style(Colors.RED, TextDecoration.ITALIC.withState(false))),
+                        Message.menuSeparator()
+                ));
+    }
+
+    public static ItemStack getSpeedBuildersItem() {
+        return ItemStack.of(Material.BRICKS)
+                .withDisplayName(Component.text("Speed Builders", Style.style(Colors.BLUE, TextDecoration.ITALIC.withState(false), TextDecoration.BOLD)))
+                .withLore(Arrays.asList(
+                        Message.menuSeparator(),
+                        Component.text("Replicate the build the fastest", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("and most accurately, but watch", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("for the Elder Guardian!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.empty(),
+                        Component.text("Coming Soon", Style.style(Colors.RED, TextDecoration.ITALIC.withState(false))),
+                        Message.menuSeparator()
+                ));
+    }
+
+    public static ItemStack getTheBackroomsItem() {
+        return ItemStack.of(Material.END_STONE)
+                .withDisplayName(Component.text("The Backrooms", Style.style(Colors.BLUE, TextDecoration.ITALIC.withState(false), TextDecoration.BOLD)))
+                .withLore(Arrays.asList(
+                        Message.menuSeparator(),
+                        Component.text("Fight through waves of entities", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.text("while surviving in The Backrooms!", Style.style(NamedTextColor.GRAY, TextDecoration.ITALIC.withState(false))),
+                        Component.empty(),
+                        Component.text("Coming Soon", Style.style(Colors.RED, TextDecoration.ITALIC.withState(false))),
+                        Message.menuSeparator()
                 ));
     }
 
