@@ -57,8 +57,6 @@ public class HubSelectorMenu extends PaginatedMenu {
                         if(connected)
                             builder.enchantment(Enchantment.UNBREAKING, (short) 1)
                                     .hideFlag(ItemHideFlag.HIDE_ENCHANTS);
-
-                        return builder;
                     }), event -> {
                 if(event.getClickType() == ClickType.LEFT_CLICK) {
                     if(true == true) {

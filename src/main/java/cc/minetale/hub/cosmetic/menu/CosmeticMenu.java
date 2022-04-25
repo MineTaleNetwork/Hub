@@ -8,7 +8,6 @@ import cc.minetale.mlib.canvas.template.Menu;
 import cc.minetale.sodium.util.Message;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.ItemHideFlag;
 import net.minestom.server.item.ItemStack;
@@ -33,7 +32,6 @@ public class CosmeticMenu extends Menu {
                         .withDisplayName(type.getDisplay())
                         .withMeta(meta -> meta.hideFlag(ItemHideFlag.HIDE_ATTRIBUTES))
                         .withLore(Arrays.asList(
-                                Message.parse("<c_dark_red>Test</c_dark_red> Test"),
                                 Component.text().append(
                                         Component.text("Unlocked: ", Message.style(NamedTextColor.GRAY)),
                                         Component.text("0/0 ", Message.style(NamedTextColor.RED)),

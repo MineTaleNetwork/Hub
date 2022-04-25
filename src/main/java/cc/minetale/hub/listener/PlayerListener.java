@@ -43,7 +43,10 @@ public class PlayerListener {
                 .addListener(PlayerMoveEvent.class, event -> {
                     var player = event.getPlayer();
 
-                    if (player.getGameMode() != GameMode.CREATIVE && !player.getInstance().getBlock(player.getPosition().relative(BlockFace.BOTTOM)).isAir()) {
+                    if (player.getGameMode() != GameMode.CREATIVE && !player.getInstance()
+                            .getBlock(player.getPosition()
+                                    .relative(BlockFace.BOTTOM))
+                            .isAir()) {
                         player.setAllowFlying(true);
                     }
                 })

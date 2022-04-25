@@ -4,8 +4,6 @@ import cc.minetale.hub.util.HubPlayer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
-import net.minestom.server.event.player.PlayerBlockInteractEvent;
-import net.minestom.server.event.player.PlayerEntityInteractEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.trait.PlayerEvent;
 
@@ -34,11 +32,11 @@ public class Hotbar {
 
                     event.setCancelled(true);
 
-//                    if(cooldown.hasCooldown()) {
-//                        return;
-//                    } else {
-//                        cooldown.refresh();
-//                    }
+                    if(cooldown.hasCooldown()) {
+                        return;
+                    } else {
+                        cooldown.refresh();
+                    }
 
                     if (event.getHand() == Player.Hand.MAIN) {
                         var action = itemActions.get(player.getHeldSlot());

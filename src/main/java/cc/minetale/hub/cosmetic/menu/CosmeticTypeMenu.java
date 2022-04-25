@@ -25,9 +25,8 @@ public class CosmeticTypeMenu extends PaginatedMenu {
 
     public CosmeticTypeMenu(Player player, CosmeticType type) {
         super(player, Component.text(type.getName() + " Cosmetics"), CanvasType.FIVE_ROW);
-        this.type = type;
 
-        super.initiliaze();
+        this.type = type;
     }
 
     @Override
@@ -70,8 +69,6 @@ public class CosmeticTypeMenu extends PaginatedMenu {
                         if (selected) {
                             meta.enchantment(Enchantment.UNBREAKING, (short) 0);
                         }
-
-                        return meta;
                     }).withLore(lore), event -> {
                         if (!permission) return;
 
@@ -91,8 +88,5 @@ public class CosmeticTypeMenu extends PaginatedMenu {
 
         return fragments;
     }
-
-    @Override
-    protected void initiliaze() {}
 
 }
