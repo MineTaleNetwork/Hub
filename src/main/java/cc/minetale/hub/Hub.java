@@ -15,6 +15,7 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.extensions.Extension;
 import net.minestom.server.instance.AnvilLoader;
 import net.minestom.server.instance.InstanceContainer;
+import net.minestom.server.instance.block.Block;
 import net.minestom.server.timer.ExecutionType;
 import net.minestom.server.utils.NamespaceID;
 import net.minestom.server.utils.time.Tick;
@@ -51,8 +52,9 @@ public class Hub extends Extension {
         dimensionTypeManager.addDimension(dimension);
 
         var container = MinecraftServer.getInstanceManager()
-                .createInstanceContainer(dimension, new AnvilLoader("world")); // new AnvilLoader("world")
+                .createInstanceContainer(dimension); // new AnvilLoader("world")
 
+        container.setGenerator(unit -> unit.modifier().fillHeight(-1, 0, Block.WHITE_CONCRETE_POWDER));
         container.setTimeRate(0);
 
         var border = container.getWorldBorder();

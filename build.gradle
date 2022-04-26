@@ -14,37 +14,43 @@ repositories {
 }
 
 dependencies {
-	compileOnly         group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+	compileOnly("org.projectlombok:lombok:1.18.24")
+    annotationProcessor("org.projectlombok:lombok:1.18.24")
 
-    compileOnly group: 'cc.minetale', name: 'Flame',  version: 'LATEST'
-    compileOnly group: 'cc.minetale', name: 'mLib',   version: 'LATEST'
-    compileOnly group: 'cc.minetale', name: 'Quartz', version: 'LATEST'
+    compileOnly("cc.minetale:Flame:LATEST")
+    compileOnly("cc.minetale:mLib:LATEST")
+    compileOnly("cc.minetale:Quartz:LATEST")
 }
 
-compileJava.options.encoding = 'UTF-8'
-sourceCompatibility = 17
-targetCompatibility = 17
+compileJava.options.encoding('UTF-8')
+javadoc.options.encoding('UTF-8')
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+shadowJar {
+    archiveClassifier.set(null)
+}
+
+setSourceCompatibility(JavaVersion.VERSION_17)
+setTargetCompatibility(JavaVersion.VERSION_17)
 
 java {
     withJavadocJar()
     withSourcesJar()
 }
 
-shadowJar {
-    classifier = null
-}
+shadowJar.finalizedBy(javadocJar, sourcesJar)
 
 publishing {
     publications {
         shadow(MavenPublication) { publication ->
             project.shadow.component(publication)
+            artifacts = [ shadowJar, javadocJar, sourcesJar ]
         }
     }
 }
-
-tasks.withType(Jar) {
-    destinationDirectory = file("../../Build")
-}
-
-task buildJar(dependsOn: ['clean', 'publishToMavenLocal'])

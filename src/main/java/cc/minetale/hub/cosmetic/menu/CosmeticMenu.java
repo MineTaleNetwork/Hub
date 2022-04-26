@@ -5,6 +5,7 @@ import cc.minetale.mlib.canvas.CanvasType;
 import cc.minetale.mlib.canvas.Filler;
 import cc.minetale.mlib.canvas.Fragment;
 import cc.minetale.mlib.canvas.template.Menu;
+import cc.minetale.mlib.util.SoundsUtil;
 import cc.minetale.sodium.util.Message;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -39,8 +40,10 @@ public class CosmeticMenu extends Menu {
                                 ).build(),
                                 Component.empty(),
                                 Component.text("Click to browse!", Message.style(NamedTextColor.YELLOW))
-                        )),
-                event -> Menu.openMenu(new CosmeticTypeMenu(getPlayer(), type)));
+                        )), event -> {
+            SoundsUtil.playClickSound(getPlayer());
+            Menu.openMenu(new CosmeticTypeMenu(getPlayer(), type));
+        });
     }
 
 }

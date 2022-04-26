@@ -72,7 +72,7 @@ public class PlayerListener {
                         player.setAllowFlying(false);
                         player.setFlying(false);
                         player.setVelocity(player.getPosition().direction().mul(50).withY(20));
-                        player.playSound(Sound.sound(Key.key("entity.blaze.hurt"), Sound.Source.MASTER, 1.0F, 0.8F));
+                        player.playSound(Sound.sound(Key.key("entity.blaze.shoot"), Sound.Source.MASTER, 1.0F, 0.8F));
                     }
                 })
                 .addListener(PlayerSpawnEvent.class, event -> {
